@@ -1,0 +1,13 @@
+{
+  "name": "copilot-proxy",
+  "version": "1.0.0",
+  "description": "HTTP proxy for GitHub Copilot API",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+} 
