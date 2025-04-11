@@ -11,12 +11,29 @@ const CUSTOM_HEADERS = {
   'User-Agent': 'CopilotProxy',
 };
 
+// Token cache storing {token, expiresAt} keyed by oauthToken
+const tokenCache = new Map();
+
+// Function to check if a cached token is still valid (with 5 min buffer)
+function isTokenValid(cachedToken) {
+  if (!cachedToken) return false;
+  // Add 5 minutes buffer before expiration
+  return Date.now() < (cachedToken.expiresAt - 5 * 60 * 1000);
+}
+
 // Function to get Bearer token using OAuth token
 async function getBearerToken(oauthToken) {
   if (!oauthToken) {
     throw new Error('OAuth token is required');
   }
 
+  // Check cache first
+  const cachedToken = tokenCache.get(oauthToken);
+  if (isTokenValid(cachedToken)) {
+    return cachedToken.token;
+  }
+
+  // If no valid cached token, request a new one
   const tokenOptions = {
     hostname: 'api.github.com',
     port: 443,
@@ -38,7 +55,16 @@ async function getBearerToken(oauthToken) {
 
       tokenRes.on('end', () => {
         try {
-          const token = JSON.parse(data).token;
+          const response = JSON.parse(data);
+          const token = response.token;
+          // GitHub Copilot tokens typically expire in 1 hour
+          // If expires_at is not provided, default to 1 hour from now
+          const expiresAt = response.expires_at
+            ? new Date(response.expires_at).getTime()
+            : Date.now() + 60 * 60 * 1000;
+
+          // Cache the token with expiration
+          tokenCache.set(oauthToken, { token, expiresAt });
           resolve(token);
         } catch (error) {
           reject(new Error(`Failed to parse token response: ${error.message}`));
