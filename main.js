@@ -1,6 +1,6 @@
-const http = require('http');
-const https = require('https');
-const url = require('url');
+import http from 'http';
+import https from 'https';
+import { URL } from 'url';
 
 // Configuration
 const PORT = 3000;
@@ -100,13 +100,13 @@ const server = http.createServer(async (req, res) => {
     const token = await getBearerToken(oauthToken);
 
     // Parse the request URL
-    const parsedUrl = url.parse(req.url);
+    const parsedUrl = new URL(req.url || '/', `http://${req.headers.host}`);
 
     // Set up the options for the forwarded request
     const options = {
       hostname: TARGET_HOST,
       port: 443,
-      path: parsedUrl.path,
+      path: parsedUrl.pathname + parsedUrl.search,
       method: req.method,
       headers: {
         ...req.headers,
