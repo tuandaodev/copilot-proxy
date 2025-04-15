@@ -9,6 +9,7 @@ const TARGET_HOST = 'api.githubcopilot.com';
 const CUSTOM_HEADERS = {
   'Editor-Version': 'CopilotProxy/0.1.0',
   'Copilot-Integration-Id': 'vscode-chat',
+  'Copilot-Vision-Request': 'true',
   'User-Agent': 'CopilotProxy',
 };
 
