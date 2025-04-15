@@ -1,4 +1,5 @@
-import http from 'http';
+import { App } from '@tinyhttp/app';
+import { logger } from '@tinyhttp/logger';
 import https from 'https';
 import { URL } from 'url';
 
@@ -10,6 +11,8 @@ const CUSTOM_HEADERS = {
   'Copilot-Integration-Id': 'vscode-chat',
   'User-Agent': 'CopilotProxy',
 };
+
+const app = new App();
 
 // Token cache storing {token, expiresAt} keyed by oauthToken
 const tokenCache = new Map();
@@ -82,27 +85,37 @@ async function getBearerToken(oauthToken) {
 
 }
 
-// Create proxy server
-const server = http.createServer(async (req, res) => {
-  console.log(`Received request for: ${req.url}`);
+// Middleware to check and extract OAuth token
+const extractOAuthToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const oauthToken = authHeader ? authHeader.replace('token ', '').replace('Bearer ', '') : null;
 
+  if (!oauthToken) {
+    res.status(401).send('GitHub OAuth token is required in the Authorization header');
+    return;
+  }
+
+  req.oauthToken = oauthToken;
+  next();
+};
+
+// Middleware to get Bearer token
+const getBearerTokenMiddleware = async (req, res, next) => {
   try {
-    // Get OAuth token from request headers
-    const authHeader = req.headers['authorization'];
-    const oauthToken = authHeader ? authHeader.replace('token ', '') : null;
-    if (!oauthToken) {
-      res.writeHead(401, { 'Content-Type': 'text/plain' });
-      res.end('GitHub OAuth token is required in the Authorization header');
-      return;
-    }
+    req.bearerToken = await getBearerToken(req.oauthToken);
+    next();
+  } catch (error) {
+    console.error(`Error getting token: ${error.message}`);
+    res.status(500).send(`Error getting token: ${error.message}`);
+  }
+};
 
-    // Get Bearer token using OAuth token
-    const token = await getBearerToken(oauthToken);
-
-    // Parse the request URL
+// Proxy middleware
+const proxyMiddleware = async (req, res) => {
+  try {
     const parsedUrl = new URL(req.url || '/', `http://${req.headers.host}`);
 
-    // Set up the options for the forwarded request
+
     const options = {
       hostname: TARGET_HOST,
       port: 443,
@@ -111,46 +124,44 @@ const server = http.createServer(async (req, res) => {
       headers: {
         ...req.headers,
         ...CUSTOM_HEADERS,
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${req.bearerToken}`,
+        'host': TARGET_HOST
       }
     };
 
-    // Remove host header to avoid conflicts
-    if (options.headers.host) {
-      options.headers.host = TARGET_HOST;
-    }
+    console.log(`Proxying to: ${TARGET_HOST}${parsedUrl.pathname + parsedUrl.search}`);
 
 
-    console.log(`Proxying to: ${TARGET_HOST}${parsedUrl.path}`);
-
-    // Create the proxied request
     const proxyReq = https.request(options, (proxyRes) => {
-      // Forward the status code
-      res.writeHead(proxyRes.statusCode, proxyRes.headers);
-
-      // Pipe the response back to the client
-      proxyRes.pipe(res, { end: true });
+      res.status(proxyRes.statusCode);
+      Object.entries(proxyRes.headers).forEach(([key, value]) => {
+        res.setHeader(key, value);
+      });
+      proxyRes.pipe(res);
     });
 
-    // Handle errors
+
     proxyReq.on('error', (error) => {
       console.error(`Proxy request error: ${error.message}`);
-      res.writeHead(500, { 'Content-Type': 'text/plain' });
-      res.end(`Proxy error: ${error.message}`);
+      res.status(500).send(`Proxy error: ${error.message}`);
     });
 
-    // Pipe the request body to the proxied request
-    req.pipe(proxyReq, { end: true });
-
+    req.pipe(proxyReq);
   } catch (error) {
-    console.error(`Error getting token: ${error.message}`);
-    res.writeHead(500, { 'Content-Type': 'text/plain' });
-    res.end(`Error getting token: ${error.message}`);
+    console.error(`Proxy error: ${error.message}`);
+    res.status(500).send(`Proxy error: ${error.message}`);
   }
-});
+};
+
+// Set up the app with middleware
+app
+  .use(logger())  // Add request logging
+  .use(extractOAuthToken)
+  .use(getBearerTokenMiddleware)
+  .use(proxyMiddleware);
 
 // Start the server
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Copilot proxy server running on port ${PORT}`);
   console.log(`Forwarding requests to https://${TARGET_HOST}`);
   console.log(`Adding headers: ${JSON.stringify(CUSTOM_HEADERS, null, 2)}`);
