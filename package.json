@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "HTTP proxy for GitHub Copilot API",
   "type": "module",
-  "main": "main.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node main.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "@tinyhttp/app": "^2.2.1",
