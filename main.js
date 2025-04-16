@@ -1,10 +1,11 @@
+import 'dotenv/config';
 import { App } from '@tinyhttp/app';
 import { logger } from '@tinyhttp/logger';
 import https from 'https';
 import { URL } from 'url';
 
 // Configuration
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const TARGET_HOST = 'api.githubcopilot.com';
 const CUSTOM_HEADERS = {
   'Editor-Version': 'CopilotProxy/0.1.0',

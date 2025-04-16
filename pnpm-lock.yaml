@@ -14,6 +14,9 @@ importers:
       '@tinyhttp/logger':
         specifier: ^2.1.0
         version: 2.1.0
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.5.0
       milliparsec:
         specifier: ^2.3.0
         version: 2.3.0
@@ -97,6 +100,10 @@ packages:
 
   dayjs@1.11.13:
     resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
+
+  dotenv@16.5.0:
+    resolution: {integrity: sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==}
+    engines: {node: '>=12'}
 
   es-escape-html@0.1.1:
     resolution: {integrity: sha512-yUx1o+8RsG7UlszmYPtks+dm6Lho2m8lgHMOsLJQsFI0R8XwUJwiMhM1M4E/S8QLeGyf6MkDV/pWgjQ0tdTSyQ==}
@@ -211,6 +218,8 @@ snapshots:
   colorette@2.0.20: {}
 
   dayjs@1.11.13: {}
+
+  dotenv@16.5.0: {}
 
   es-escape-html@0.1.1: {}
 
