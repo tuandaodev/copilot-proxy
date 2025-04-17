@@ -1,6 +1,6 @@
 import 'dotenv/config';
-import https from 'https';
-import { URL } from 'url';
+import https from 'node:https';
+import { URL } from 'node:url';
 import { App } from '@tinyhttp/app';
 import { logger } from '@tinyhttp/logger';
 
@@ -87,7 +87,7 @@ async function getBearerToken(oauthToken) {
 
 // Middleware to check and extract OAuth token
 const extractOAuthToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
+  const authHeader = req.headers.authorization;
   const oauthToken = authHeader ? authHeader.replace('token ', '').replace('Bearer ', '') : null;
 
   if (!oauthToken) {
