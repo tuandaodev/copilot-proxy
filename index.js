@@ -1,8 +1,8 @@
 import 'dotenv/config';
-import { App } from '@tinyhttp/app';
-import { logger } from '@tinyhttp/logger';
 import https from 'https';
 import { URL } from 'url';
+import { App } from '@tinyhttp/app';
+import { logger } from '@tinyhttp/logger';
 
 // Configuration
 const PORT = process.env.PORT || 3000;
@@ -23,7 +23,7 @@ const tokenCache = new Map();
 function isTokenValid(cachedToken) {
   if (!cachedToken) return false;
   // Add 5 minutes buffer before expiration
-  return Date.now() < (cachedToken.expiresAt - 5 * 60 * 1000);
+  return Date.now() < cachedToken.expiresAt - 5 * 60 * 1000;
 }
 
 // Function to get Bearer token using OAuth token
@@ -46,8 +46,8 @@ async function getBearerToken(oauthToken) {
     method: 'GET',
     headers: {
       'User-Agent': 'CopilotProxy',
-      'Authorization': `token ${oauthToken}`
-    }
+      Authorization: `token ${oauthToken}`,
+    },
   };
 
   return new Promise((resolve, reject) => {
@@ -81,10 +81,8 @@ async function getBearerToken(oauthToken) {
       reject(error);
     });
 
-
     tokenReq.end();
   });
-
 }
 
 // Middleware to check and extract OAuth token
@@ -117,7 +115,6 @@ const proxyMiddleware = async (req, res) => {
   try {
     const parsedUrl = new URL(req.url || '/', `http://${req.headers.host}`);
 
-
     const options = {
       hostname: TARGET_HOST,
       port: 443,
@@ -126,13 +123,12 @@ const proxyMiddleware = async (req, res) => {
       headers: {
         ...req.headers,
         ...CUSTOM_HEADERS,
-        'Authorization': `Bearer ${req.bearerToken}`,
-        'host': TARGET_HOST
-      }
+        Authorization: `Bearer ${req.bearerToken}`,
+        host: TARGET_HOST,
+      },
     };
 
     console.log(`Proxying to: ${TARGET_HOST}${parsedUrl.pathname + parsedUrl.search}`);
-
 
     const proxyReq = https.request(options, (proxyRes) => {
       res.status(proxyRes.statusCode);
@@ -141,7 +137,6 @@ const proxyMiddleware = async (req, res) => {
       });
       proxyRes.pipe(res);
     });
-
 
     proxyReq.on('error', (error) => {
       console.error(`Proxy request error: ${error.message}`);
@@ -157,7 +152,7 @@ const proxyMiddleware = async (req, res) => {
 
 // Set up the app with middleware
 app
-  .use(logger())  // Add request logging
+  .use(logger()) // Add request logging
   .use(extractOAuthToken)
   .use(getBearerTokenMiddleware)
   .use(proxyMiddleware);
