@@ -3,7 +3,8 @@
 import 'dotenv/config';
 import { App } from '@tinyhttp/app';
 import { logger } from '@tinyhttp/logger';
-import { CUSTOM_HEADERS, TARGET_HOST, proxyApp } from './src/proxy-app.js';
+import { COPILOT_API_HOST, COPILOT_HEADERS } from './src/config.js';
+import { proxyApp } from './src/proxy-app.js';
 
 // Configuration
 const PORT = process.env.PORT || 3000;
@@ -18,6 +19,6 @@ app
 // Start the server
 app.listen(PORT, () => {
   console.log(`Copilot proxy server running on port ${PORT}`);
-  console.log(`Forwarding requests to https://${TARGET_HOST}`);
-  console.log(`Adding headers: ${JSON.stringify(CUSTOM_HEADERS, null, 2)}`);
+  console.log(`Forwarding requests to ${COPILOT_API_HOST}`);
+  console.log(`Adding headers: ${JSON.stringify(COPILOT_HEADERS, null, 2)}`);
 });
