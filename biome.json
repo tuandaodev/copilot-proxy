@@ -9,6 +9,10 @@
       "recommended": true,
       "complexity": {
         "noForEach": "off"
+      },
+      "correctness": {
+        "noUndeclaredVariables": "error",
+        "noUnusedImports": "error"
       }
     }
   },

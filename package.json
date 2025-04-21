@@ -17,10 +17,13 @@
     "@tinyhttp/app": "^2.2.1",
     "@tinyhttp/logger": "^2.1.0",
     "dotenv": "^16.5.0",
-    "milliparsec": "^2.3.0"
+    "milliparsec": "^2.3.0",
+    "node-fetch": "^3.3.2",
+    "node-persist": "^4.0.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.0.0"
+    "@biomejs/biome": "^1.0.0",
+    "eslint": "^9.25.0"
   },
   "engines": {
     "node": ">=14.0.0"
