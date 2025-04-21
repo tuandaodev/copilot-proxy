@@ -4,6 +4,9 @@
   "description": "HTTP proxy for GitHub Copilot API",
   "type": "module",
   "main": "index.js",
+  "bin": {
+    "copilot-proxy": "./index.js"
+  },
   "scripts": {
     "start": "node index.js",
     "format": "biome format --write .",
