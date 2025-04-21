@@ -16,26 +16,17 @@ const app = new App();
 // Token cache storing {token, expiresAt} keyed by oauthToken
 const tokenCache = new Map();
 
+// Utility function to add a buffer to a timestamp
+const addBufferToTimestamp = (timestamp, bufferInMs) => timestamp - bufferInMs;
+
 // Function to check if a cached token is still valid (with 5 min buffer)
-function isTokenValid(cachedToken) {
+const isTokenValid = (cachedToken) => {
   if (!cachedToken) return false;
-  // Add 5 minutes buffer before expiration
-  return Date.now() < cachedToken.expiresAt - 5 * 60 * 1000;
-}
+  return Date.now() < addBufferToTimestamp(cachedToken.expiresAt, 5 * 60 * 1000);
+};
 
-// Function to get Bearer token using OAuth token
-async function getBearerToken(oauthToken) {
-  if (!oauthToken) {
-    throw new Error('OAuth token is required');
-  }
-
-  // Check cache first
-  const cachedToken = tokenCache.get(oauthToken);
-  if (isTokenValid(cachedToken)) {
-    return cachedToken.token;
-  }
-
-  // If no valid cached token, request a new one
+// Function to fetch a new Bearer token from GitHub
+const fetchBearerToken = (oauthToken) => {
   const tokenOptions = {
     hostname: 'api.github.com',
     port: 443,
@@ -59,13 +50,10 @@ async function getBearerToken(oauthToken) {
         try {
           const response = JSON.parse(data);
           const token = response.token;
-          // GitHub Copilot tokens typically expire in 1 hour
-          // If expires_at is not provided, default to 1 hour from now
           const expiresAt = response.expires_at
             ? new Date(response.expires_at).getTime()
             : Date.now() + 60 * 60 * 1000;
 
-          // Cache the token with expiration
           tokenCache.set(oauthToken, { token, expiresAt });
           resolve(token);
         } catch (error) {
@@ -74,18 +62,29 @@ async function getBearerToken(oauthToken) {
       });
     });
 
-    tokenReq.on('error', (error) => {
-      reject(error);
-    });
-
+    tokenReq.on('error', reject);
     tokenReq.end();
   });
-}
+};
+
+// Function to get Bearer token using OAuth token
+const getBearerToken = async (oauthToken) => {
+  if (!oauthToken) {
+    throw new Error('OAuth token is required');
+  }
+
+  const cachedToken = tokenCache.get(oauthToken);
+  if (isTokenValid(cachedToken)) {
+    return cachedToken.token;
+  }
+
+  return fetchBearerToken(oauthToken);
+};
 
 // Middleware to check and extract OAuth token
 const extractOAuthToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  const oauthToken = authHeader ? authHeader.replace('token ', '').replace('Bearer ', '') : null;
+  const oauthToken = authHeader?.replace(/^(token|Bearer) /, '') || null;
 
   if (!oauthToken) {
     res.status(401).send('GitHub OAuth token is required in the Authorization header');
