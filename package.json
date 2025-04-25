@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "node server.js",
+    "start:dev": "nodemon server.js",
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
@@ -30,6 +31,7 @@
     "@biomejs/biome": "^1.0.0",
     "@tailwindcss/vite": "^4.0.7",
     "eslint": "^9.25.0",
+    "nodemon": "^3.1.10",
     "tailwindcss": "^4.0.7",
     "typescript": "^5.7.2",
     "vite": "^6.0.0",
