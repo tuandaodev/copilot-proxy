@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-import 'dotenv/config';
-import { App } from '@tinyhttp/app';
-import { logger } from '@tinyhttp/logger';
-import { COPILOT_API_HOST, COPILOT_HEADERS } from './src/config.js';
-import { proxyApp } from './src/proxy-app.js';
+import "dotenv/config";
+import { App } from "@tinyhttp/app";
+import { logger } from "@tinyhttp/logger";
+import { COPILOT_API_HOST, COPILOT_HEADERS } from "./server/config.js";
+import { proxyApp } from "./server/proxy-app.js";
 
 // Configuration
 const PORT = process.env.PORT || 3000;
@@ -14,7 +14,7 @@ const app = new App();
 // Set up the app with middleware
 app
   .use(logger()) // Add request logging
-  .use('/api', proxyApp);
+  .use("/api", proxyApp);
 
 // Start the server
 app.listen(PORT, () => {

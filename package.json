@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "HTTP proxy for GitHub Copilot API",
   "type": "module",
-  "main": "index.js",
+  "main": "server.js",
   "bin": {
-    "copilot-proxy": "./index.js"
+    "copilot-proxy": "./server.js"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "node server.js",
     "format": "biome format --write .",
     "lint": "biome lint .",
     "check": "biome check --apply ."
