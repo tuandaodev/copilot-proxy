@@ -5,6 +5,7 @@ import { App } from "@tinyhttp/app";
 import { logger } from "@tinyhttp/logger";
 import { COPILOT_API_HOST, COPILOT_HEADERS } from "./server/config.js";
 import { proxyApp } from "./server/proxy-app.js";
+import sirv from "sirv";
 
 // Configuration
 const PORT = process.env.PORT || 3000;
@@ -14,6 +15,7 @@ const app = new App();
 // Set up the app with middleware
 app
   .use(logger()) // Add request logging
+  .use(sirv("dist", { dev: process.env.NODE_ENV !== "production" })) // Serve static files
   .use("/api", proxyApp);
 
 // Start the server
