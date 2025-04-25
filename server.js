@@ -4,7 +4,7 @@ import "dotenv/config";
 import { App } from "@tinyhttp/app";
 import { logger } from "@tinyhttp/logger";
 import { COPILOT_API_HOST, COPILOT_HEADERS } from "./server/config.js";
-import { proxyApp } from "./server/proxy-app.js";
+import { proxyApp } from "./server/apps/proxy-app.js";
 import sirv from "sirv";
 
 // Configuration
