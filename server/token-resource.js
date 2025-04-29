@@ -8,7 +8,7 @@ const MANDATORY_HEADERS = Object.freeze({
   'accept-encoding': 'gzip,deflate,br',
 });
 
-let state = {
+const state = {
   accessToken: null,
   deviceCode: null,
   userCode: null,
@@ -19,6 +19,18 @@ let state = {
 };
 
 let pollingPromise = null;
+
+function resetWithMessage(message) {
+  state.accessToken = null;
+  state.deviceCode = null;
+  state.userCode = null;
+  state.verificationUri = null;
+  state.expiresAt = null;
+  state.polling = false;
+  state.message = message;
+
+  pollingPromise = null;
+}
 
 async function startDeviceLogin() {
   if (state.polling) return state;
@@ -39,11 +51,25 @@ async function startDeviceLogin() {
     message: `Go to ${json.verification_uri} and enter code: ${json.user_code}`,
   });
 
+  pollingPromise = pollForToken();
+
   return state;
 }
 
 async function pollForToken() {
-  while (state.polling && !state.accessToken && Date.now() < state.expiresAt) {
+  while (state.polling) {
+    console.log(
+      'Polling for token for device code',
+      state.deviceCode,
+      ' remaining time:',
+      state.expiresAt - Date.now(),
+      'ms',
+    );
+    if (Date.now() > state.expiresAt) {
+      resetWithMessage('Device code expired.');
+      return state;
+    }
+
     await new Promise((r) => setTimeout(r, 5000));
     const resp = await fetch('https://github.com/login/oauth/access_token', {
       method: 'POST',
@@ -57,36 +83,20 @@ async function pollForToken() {
     const json = await resp.json();
 
     if (json.access_token) {
+      resetWithMessage('Login successful.');
       state.accessToken = json.access_token;
-      state.polling = false;
-      state.message = 'Login successful.';
       return state;
     }
     if (json.error === 'authorization_pending') {
       // Still in process, continue polling.
     } else if (json.error) {
-      state.polling = false;
-      state.message = `Error: ${json.error_description || json.error}`;
+      resetWithMessage(`Error: ${json.error_description || json.error}`);
       return state;
     }
   }
 }
 
-function reset() {
-  state = {
-    accessToken: null,
-    deviceCode: null,
-    userCode: null,
-    verificationUri: null,
-    expiresAt: null,
-    polling: false,
-    message: 'Not logged in.',
-  };
-  pollingPromise = null;
-}
-
 export async function startLogin() {
-  reset();
   return startDeviceLogin();
 }
 
