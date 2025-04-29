@@ -48,7 +48,7 @@ async function startDeviceLogin() {
     verificationUri: json.verification_uri,
     expiresAt: Date.now() + (json.expires_in || 900) * 1000,
     polling: true,
-    message: `Go to ${json.verification_uri} and enter code: ${json.user_code}`,
+    message: 'Waiting for user to authorize the device.',
   });
 
   pollingPromise = pollForToken();
