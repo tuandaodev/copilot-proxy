@@ -6,6 +6,12 @@ export default defineConfig({
   plugins: [solidPlugin(), tailwindcss()],
   server: {
     port: 3000,
+    proxy: {
+      '/admin': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
+    },
   },
   build: {
     target: 'esnext',
