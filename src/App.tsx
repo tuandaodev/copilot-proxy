@@ -1,29 +1,7 @@
 import type { Component } from 'solid-js';
-import { Match, Suspense, Switch, createSignal } from 'solid-js';
+import { Match, Suspense, Switch } from 'solid-js';
 import TokenList from './TokenList';
-
-interface TokenResource {
-  message: string;
-  accessToken?: string;
-  deviceCode: string;
-  userCode: string;
-  verificationUri: string;
-}
-
-const [tokenResource, setTokenResource] = createSignal<TokenResource>(null);
-async function generateToken() {
-  const res = await fetch('/admin/token', {
-    method: 'POST',
-  });
-  const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
-
-  while (true) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    const json = JSON.parse(value);
-    setTokenResource(json);
-  }
-}
+import { generateToken, tokenResource } from './models/token';
 
 const App: Component = () => {
   return (
@@ -68,9 +46,6 @@ const App: Component = () => {
         <TokenList />
       </div>
     </>
-    // <div class="min-h-screen bg-white text-black dark:bg-neutral-900 dark:text-gray-100">
-    //   <p class="text-4xl text-green-700 dark:text-green-400 text-center py-20">Hello tailwind</p>
-    // </div>
   );
 };
 
