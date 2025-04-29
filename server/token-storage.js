@@ -16,10 +16,10 @@ await selectedTokenStorage.init();
 
 // Store a new token: { name, token }
 export async function storeToken({ id, name, token }) {
-  if (!id) {
-    id = uuid();
-  }
-  await tokenStorage.setItem(id, { id, name, token });
+  const item = id
+    ? await tokenStorage.getItem(id)
+    : { id: uuid(), name, token, createdAt: Date.now() };
+  await tokenStorage.setItem(item.id, { ...item, name, token });
 }
 
 // Get all tokens

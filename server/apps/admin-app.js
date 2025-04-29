@@ -1,6 +1,6 @@
 import { App } from '@tinyhttp/app';
 import { startLogin, startPolling } from '../token-resource.js';
-import { storeToken } from '../token-storage.js';
+import { getTokens, storeToken } from '../token-storage.js';
 
 const app = new App();
 
@@ -26,8 +26,9 @@ app
     }
     res.end();
   })
-  .get('/tokens', (req, res) => {
-    res.send('Welcome to the Admin App!');
+  .get('/tokens', async (req, res) => {
+    const tokens = await getTokens();
+    res.json(tokens);
   });
 
 export { app as adminApp };

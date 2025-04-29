@@ -1,7 +1,7 @@
 import type { Component } from 'solid-js';
 import { Match, Suspense, Switch } from 'solid-js';
 import TokenList from './TokenList';
-import { generateToken, tokenResource } from './models/token';
+import { generateToken, tokenResource } from './models/token/token-resource';
 
 const App: Component = () => {
   return (

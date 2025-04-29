@@ -1,12 +1,5 @@
 import { createSignal } from 'solid-js';
-
-interface TokenResource {
-  message: string;
-  accessToken?: string;
-  deviceCode: string;
-  userCode: string;
-  verificationUri: string;
-}
+import type { TokenResource } from './types';
 
 const [tokenResource, setTokenResource] = createSignal<TokenResource>(null);
 export { tokenResource };
