@@ -1,5 +1,6 @@
 import { App } from '@tinyhttp/app';
 import { startLogin, startPolling } from '../token-resource.js';
+import { storeToken } from '../token-storage.js';
 
 const app = new App();
 
@@ -16,7 +17,13 @@ app
       return obj;
     };
     await startLogin().then(jsonWriter);
-    await startPolling().then(jsonWriter);
+    const { accessToken } = await startPolling().then(jsonWriter);
+    if (accessToken) {
+      storeToken({
+        name: `Token-${Date.now()}`,
+        token: accessToken,
+      });
+    }
     res.end();
   })
   .get('/tokens', (req, res) => {

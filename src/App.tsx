@@ -14,8 +14,6 @@ async function generateToken() {
   const res = await fetch('/admin/token', {
     method: 'POST',
   });
-  // const json = await res.json();
-  // setToken(json);
   const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
 
   while (true) {
@@ -23,7 +21,6 @@ async function generateToken() {
     if (done) break;
     const json = JSON.parse(value);
     setTokenResource(json);
-    console.log('xxx: generateToken:', json, done);
   }
 }
 
