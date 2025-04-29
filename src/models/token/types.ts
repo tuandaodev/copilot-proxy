@@ -1,9 +1,9 @@
 export interface TokenResource {
   message: string;
   accessToken?: string;
-  deviceCode: string;
-  userCode: string;
-  verificationUri: string;
+  deviceCode?: string;
+  userCode?: string;
+  verificationUri?: string;
 }
 
 export interface TokenItem {

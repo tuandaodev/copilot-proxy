@@ -4,6 +4,7 @@ import type { TokenResource } from './types';
 const [tokenResource, setTokenResource] = createSignal<TokenResource>(null);
 export { tokenResource };
 export async function generateToken() {
+  setTokenResource({ message: 'Generating token...' });
   const res = await fetch('/admin/token', {
     method: 'POST',
   });

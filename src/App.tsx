@@ -17,7 +17,7 @@ const App: Component = () => {
         <p class="flex border-b border-zinc-700 pb-4 mb-4">
           <span class="flex-1 text-xl">Github Copilot device tokens</span>
           <span
-            class="rounded-sm bg-neutral-800 text-xs px-3 py-1 border border-zinc-600 hover:bg-neutral-700 cursor-pointer"
+            class="rounded-sm bg-neutral-800 text-xs px-3 py-1 border border-zinc-600 hover:bg-neutral-700 cursor-pointer active:bg-neutral-600 transition-colors duration-200"
             onClick={generateToken}
             onKeyPress={generateToken}
           >
