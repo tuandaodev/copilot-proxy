@@ -1,6 +1,6 @@
 import { App } from '@tinyhttp/app';
 import { startLogin, startPolling } from '../token-resource.js';
-import { getTokens, storeToken } from '../token-storage.js';
+import { getTokens, removeToken, storeToken } from '../token-storage.js';
 
 const app = new App();
 
@@ -29,6 +29,11 @@ app
   .get('/tokens', async (req, res) => {
     const tokens = await getTokens();
     res.json(tokens);
+  })
+  .delete('/tokens/:id', async (req, res) => {
+    const { id } = req.params;
+    await removeToken(id);
+    res.status(204).end();
   });
 
 export { app as adminApp };

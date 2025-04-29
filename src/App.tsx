@@ -1,9 +1,15 @@
 import type { Component } from 'solid-js';
-import { Match, Suspense, Switch } from 'solid-js';
+import { Match, Suspense, Switch, createEffect } from 'solid-js';
 import TokenList from './TokenList';
+import { refetchTokenList } from './models/token/token-item';
 import { generateToken, tokenResource } from './models/token/token-resource';
 
 const App: Component = () => {
+  createEffect(() => {
+    if (tokenResource()?.accessToken) {
+      refetchTokenList();
+    }
+  });
   return (
     <>
       <div class="bg-neutral-950 border-b border-zinc-600 p-4 text-2xl">Copilot Proxy</div>
