@@ -1,3 +1,5 @@
+import { Writable } from 'node:stream';
+
 import { COPILOT_API_HOST, COPILOT_HEADERS } from '../config.js';
 
 export const proxyToCopilot = async (req, res) => {
@@ -13,6 +15,7 @@ export const proxyToCopilot = async (req, res) => {
         host: COPILOT_API_HOST,
       },
       body: ['GET', 'HEAD'].includes(req.method) ? undefined : req,
+      duplex: 'half',
     };
 
     const targetUrl = `https://${COPILOT_API_HOST}${parsedUrl.pathname}${parsedUrl.search}`;
@@ -26,7 +29,7 @@ export const proxyToCopilot = async (req, res) => {
     });
 
     if (response.body) {
-      response.body.pipe(res);
+      response.body.pipeTo(Writable.toWeb(res));
     } else {
       const data = await response.text();
       res.send(data);
