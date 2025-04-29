@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 import { COPILOT_TOKEN_API_URL } from '../config.js';
 
 // Token cache storing {token, expiresAt} keyed by oauthToken

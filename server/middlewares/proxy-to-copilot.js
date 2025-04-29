@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import { COPILOT_API_HOST, COPILOT_HEADERS } from '../config.js';
 
 export const proxyToCopilot = async (req, res) => {
