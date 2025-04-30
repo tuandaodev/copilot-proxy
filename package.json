@@ -20,6 +20,7 @@
   "dependencies": {
     "@tinyhttp/app": "^2.2.1",
     "@tinyhttp/logger": "^2.1.0",
+    "daisyui": "^5.0.30",
     "dotenv": "^16.5.0",
     "lucide-solid": "^0.503.0",
     "milliparsec": "^2.3.0",
