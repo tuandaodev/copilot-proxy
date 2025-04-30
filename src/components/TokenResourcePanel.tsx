@@ -26,7 +26,7 @@ const VerificationInfo: Component = () => {
 const AccessTokenInfo: Component = () => {
   return (
     <span>
-      Your access token is:&nbsp;
+      Keep the token safe. You will not be able to see it again. Your access token is:&nbsp;
       <span class="font-mono font-bold">{tokenResource().accessToken}</span>
       <IconCopy tooltips="Copy access token" textToCopy={() => tokenResource().accessToken} />
     </span>
