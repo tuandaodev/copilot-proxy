@@ -9,7 +9,7 @@ import { proxyApp } from './server/apps/proxy-app.js';
 import { COPILOT_API_HOST, COPILOT_HEADERS } from './server/config.js';
 
 // Configuration
-const PORT = process.env.PORT || 3000;
+const PORT = Number.parseInt(process.env.PORT) || 3000;
 
 const app = new App();
 
@@ -21,8 +21,12 @@ app
   .use('/api', proxyApp);
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Copilot proxy server running on port ${PORT}`);
-  console.log(`Forwarding requests to ${COPILOT_API_HOST}`);
-  console.log(`Adding headers: ${JSON.stringify(COPILOT_HEADERS, null, 2)}`);
-});
+app.listen(
+  PORT,
+  () => {
+    console.log(`Copilot proxy server running on port ${PORT}`);
+    console.log(`Forwarding requests to ${COPILOT_API_HOST}`);
+    console.log(`Adding headers: ${JSON.stringify(COPILOT_HEADERS, null, 2)}`);
+  },
+  '127.0.0.1',
+);
