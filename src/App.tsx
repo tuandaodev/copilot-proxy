@@ -1,9 +1,9 @@
+import IconCopy from '@/components/IconCopy';
+import TokenList from '@/components/TokenList';
+import { refetchTokenList } from '@/models/token/token-item';
+import { generateToken, tokenResource } from '@/models/token/token-resource';
 import type { Component } from 'solid-js';
 import { Match, Suspense, Switch, createEffect } from 'solid-js';
-import TokenList from './TokenList';
-import IconCopy from './components/IconCopy';
-import { refetchTokenList } from './models/token/token-item';
-import { generateToken, tokenResource } from './models/token/token-resource';
 
 const App: Component = () => {
   createEffect(() => {

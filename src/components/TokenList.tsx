@@ -1,7 +1,7 @@
+import { removeToken, tokenList } from '@/models/token/token-item';
+import type { TokenItem } from '@/models/token/types';
 import type { Component } from 'solid-js';
 import { For } from 'solid-js';
-import { removeToken, tokenList } from './models/token/token-item';
-import type { TokenItem } from './models/token/types';
 
 const onClickDelete = (token: TokenItem) => {
   if (window.confirm(`Are you sure to delete the token ${token.name}?`)) {

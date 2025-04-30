@@ -1,9 +1,9 @@
+import { tokenResource } from '@/models/token/token-resource';
 import Copy from 'lucide-solid/icons/copy';
 import CopyCheck from 'lucide-solid/icons/copy-check';
 import type { Component } from 'solid-js';
 import { createSignal } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
-import { tokenResource } from '../models/token/token-resource';
 
 const [copied, setCopied] = createSignal(false);
 const Icon = () => (copied() ? CopyCheck : Copy);
