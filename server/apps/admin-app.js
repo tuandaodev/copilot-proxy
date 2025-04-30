@@ -31,7 +31,8 @@ app
     tokens.forEach((item) => {
       item.token = `${item.token.slice(0, 5)}...${item.token.slice(-5)}`;
     });
-    res.json(tokens);
+
+    res.json(tokens.sort((a, b) => b.createdAt - a.createdAt));
   })
   .delete('/tokens/:id', async (req, res) => {
     const { id } = req.params;
