@@ -1,4 +1,4 @@
-import { removeToken, tokenList } from '@/models/token/token-item';
+import { removeToken, setDefaultToken, tokenList } from '@/models/token/token-item';
 import type { TokenItem } from '@/models/token/types';
 import type { Component } from 'solid-js';
 import { For } from 'solid-js';
@@ -7,6 +7,10 @@ const onClickDelete = (item: TokenItem) => {
   if (window.confirm(`Are you sure to delete the token ${item.name}?`)) {
     removeToken(item.id);
   }
+};
+
+const onClickDefault = (item: TokenItem) => {
+  setDefaultToken(item.id);
 };
 
 const TokenList: Component = () => {
@@ -22,6 +26,15 @@ const TokenList: Component = () => {
             <p class="text-zinc-500 text-xs">
               Created at: {new Date(item.createdAt).toLocaleString()}
             </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <div
+              class="rounded-sm bg-neutral-800 text-xs px-3 py-1 border border-zinc-600 hover:bg-neutral-700 cursor-pointer active:bg-neutral-600 transition-colors duration-200"
+              onClick={() => onClickDefault(item)}
+              onKeyPress={() => onClickDefault(item)}
+            >
+              {item.default ? 'Default' : 'Set as default'}
+            </div>
           </div>
           <div
             class="rounded-sm bg-neutral-800 text-xs px-3 py-1 border border-zinc-600 text-red-400 h-fit hover:bg-red-500 hover:text-zinc-100 hover:border-red-500 font-bold cursor-pointer transition-colors duration-200"

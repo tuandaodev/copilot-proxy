@@ -1,6 +1,7 @@
 import { App } from '@tinyhttp/app';
+import { getTokens, setDefaultToken } from '../controllers/token-controller.js';
 import { startLogin, startPolling } from '../token-resource.js';
-import { getTokens, removeToken, storeToken } from '../token-storage.js';
+import * as tokenStorage from '../token-storage.js';
 
 const app = new App();
 
@@ -19,24 +20,18 @@ app
     await startLogin().then(jsonWriter);
     const { accessToken } = await startPolling().then(jsonWriter);
     if (accessToken) {
-      storeToken({
+      tokenStorage.storeToken({
         name: `Token-${Date.now()}`,
         token: accessToken,
       });
     }
     res.end();
   })
-  .get('/tokens', async (req, res) => {
-    const tokens = await getTokens();
-    tokens.forEach((item) => {
-      item.token = `${item.token.slice(0, 5)}...${item.token.slice(-5)}`;
-    });
-
-    res.json(tokens.sort((a, b) => b.createdAt - a.createdAt));
-  })
+  .put('/tokens/default', setDefaultToken)
+  .get('/tokens', getTokens)
   .delete('/tokens/:id', async (req, res) => {
     const { id } = req.params;
-    await removeToken(id);
+    await tokenStorage.removeToken(id);
     res.status(204).end();
   });
 

@@ -11,4 +11,5 @@ export interface TokenItem {
   name: string;
   token: string;
   createdAt: number;
+  default: boolean;
 }

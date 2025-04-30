@@ -15,11 +15,31 @@ async function removeTokenItem(id: string) {
   return true;
 }
 
+async function putTokenDefault(id: string) {
+  await fetch('/admin/tokens/default', {
+    method: 'PUT',
+    body: JSON.stringify({ id }),
+  });
+  return true;
+}
+
 const [tokenList, { refetch, mutate }] = createResource<TokenItem[]>(fetchTokens);
 
-const removeToken = async (id: string) => {
+export const setDefaultToken = async (id: string) => {
+  const succeed = await putTokenDefault(id);
+  if (succeed) {
+    mutate((tokens) =>
+      tokens.map((token) => ({
+        ...token,
+        default: token.id === id,
+      })),
+    );
+  }
+};
+
+export const removeToken = async (id: string) => {
   const succeed = await removeTokenItem(id);
   succeed && mutate((tokens) => tokens.filter((token) => token.id !== id));
 };
 
-export { tokenList, refetch as refetchTokenList, removeToken };
+export { tokenList, refetch as refetchTokenList };

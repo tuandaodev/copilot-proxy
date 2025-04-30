@@ -3,6 +3,7 @@
 import 'dotenv/config';
 import { App } from '@tinyhttp/app';
 import { logger } from '@tinyhttp/logger';
+import { json } from 'milliparsec';
 import sirv from 'sirv';
 import { adminApp } from './server/apps/admin-app.js';
 import { proxyApp } from './server/apps/proxy-app.js';
@@ -17,7 +18,7 @@ const app = new App();
 app
   .use(logger()) // Add request logging
   .use(sirv('dist', { dev: process.env.NODE_ENV !== 'production' })) // Serve static files
-  .use('/admin', adminApp)
+  .use('/admin', json(), adminApp)
   .use('/api', proxyApp);
 
 // Start the server
