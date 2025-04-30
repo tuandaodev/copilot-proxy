@@ -28,6 +28,9 @@ app
   })
   .get('/tokens', async (req, res) => {
     const tokens = await getTokens();
+    tokens.forEach((item) => {
+      item.token = `${item.token.slice(0, 5)}...${item.token.slice(-5)}`;
+    });
     res.json(tokens);
   })
   .delete('/tokens/:id', async (req, res) => {
