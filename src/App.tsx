@@ -1,15 +1,9 @@
-import Copy from 'lucide-solid/icons/copy';
 import type { Component } from 'solid-js';
 import { Match, Suspense, Switch, createEffect } from 'solid-js';
 import TokenList from './TokenList';
+import IconCopy from './components/IconCopy';
 import { refetchTokenList } from './models/token/token-item';
 import { generateToken, tokenResource } from './models/token/token-resource';
-
-const onClickCopyCode = () => {
-  if (tokenResource().userCode) {
-    navigator.clipboard.writeText(tokenResource().userCode);
-  }
-};
 
 const App: Component = () => {
   createEffect(() => {
@@ -50,14 +44,7 @@ const App: Component = () => {
                     </a>
                     &nbsp; and paste the code:&nbsp;
                     <span class="font-mono font-bold">{tokenResource().userCode}</span>
-                    <div
-                      class="inline-block align-middle ml-2 cursor-pointer hover:bg-neutral-700 active:bg-neutral-600 transition-colors duration-200 rounded p-1"
-                      title="Copy code"
-                      onClick={onClickCopyCode}
-                      onKeyPress={onClickCopyCode}
-                    >
-                      <Copy size={18} />
-                    </div>
+                    <IconCopy />
                   </span>
                 )}
               </p>
