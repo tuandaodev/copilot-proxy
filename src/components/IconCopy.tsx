@@ -19,7 +19,7 @@ const onClickCopyCode = () => {
 const IconCopy: Component = () => {
   return (
     <div
-      class="tooltip tooltip-right inline-block align-middle ml-2 cursor-pointer hover:bg-neutral-700 active:bg-neutral-600 transition-colors duration-200 rounded p-1"
+      class="d-tooltip d-tooltip-right inline-block align-middle ml-2 cursor-pointer hover:bg-neutral-700 active:bg-neutral-600 transition-colors duration-200 rounded p-1"
       data-tip={tipsCopy()}
       onClick={onClickCopyCode}
       onKeyPress={onClickCopyCode}
