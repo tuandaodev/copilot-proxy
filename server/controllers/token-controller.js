@@ -1,4 +1,28 @@
+import { startLogin, startPolling } from '../token-resource.js';
 import * as tokenStorage from '../token-storage.js';
+
+export async function createToken(req, res) {
+  res.setHeader('Content-Type', 'text/plain');
+  const jsonWriter = (obj) => {
+    res.write(JSON.stringify(obj));
+    return obj;
+  };
+  await startLogin().then(jsonWriter);
+  const { accessToken } = await startPolling().then(jsonWriter);
+  if (accessToken) {
+    tokenStorage.storeToken({
+      name: `Token-${Date.now()}`,
+      token: accessToken,
+    });
+  }
+  res.end();
+}
+
+export async function removeToken(req, res) {
+  const { id } = req.params;
+  await tokenStorage.removeToken(id);
+  res.status(204).end();
+}
 
 export async function getTokens(req, res) {
   const tokens = await tokenStorage.getTokens();
