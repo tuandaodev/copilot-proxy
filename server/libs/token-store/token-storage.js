@@ -1,6 +1,5 @@
 import storage from 'node-persist';
 import { v4 as uuid } from 'uuid';
-import tokenMeta from './copilot-token-meta.js';
 
 const tokenStorage = storage.create({
   dir: '.storage/tokens',
@@ -20,8 +19,17 @@ export async function storeToken({ id, name, token }) {
   const item = id
     ? await tokenStorage.getItem(id)
     : { id: uuid(), name, token, createdAt: Date.now() };
-  const meta = tokenMeta.get(token);
-  await tokenStorage.setItem(item.id, { ...item, name, token, meta });
+  await tokenStorage.setItem(item.id, { ...item, name, token });
+}
+
+export async function updateMetaByToken(oauthToken, meta) {
+  const tokens = await tokenStorage.values();
+  const tokenItem = tokens.find((item) => item.token === oauthToken);
+  if (!tokenItem) {
+    // may be a user-provided token, do nothing
+    return;
+  }
+  await tokenStorage.setItem(tokenItem.id, { ...tokenItem, meta });
 }
 
 // Get all tokens
