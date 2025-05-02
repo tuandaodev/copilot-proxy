@@ -1,6 +1,14 @@
 import { maskToken } from '../libs/mask-token.js';
+import * as tokenStorage from '../libs/token-store/token-storage.js';
 import { startLogin, startPolling } from '../token-resource.js';
-import * as tokenStorage from '../token-storage.js';
+
+function transformTokenItem(tokenItem, defaultToken) {
+  return {
+    ...tokenItem,
+    token: maskToken(tokenItem.token),
+    default: defaultToken && defaultToken.id === tokenItem.id,
+  };
+}
 
 export async function createToken(req, res) {
   res.setHeader('Content-Type', 'text/plain');
@@ -28,12 +36,11 @@ export async function removeToken(req, res) {
 export async function getTokens(req, res) {
   const tokens = await tokenStorage.getTokens();
   const defaultToken = await tokenStorage.getSelectedToken();
-  tokens.forEach((item) => {
-    item.token = maskToken(item.token);
-    item.default = defaultToken && defaultToken.id === item.id;
-  });
+  const results = tokens
+    .map((item) => transformTokenItem(item, defaultToken))
+    .sort((a, b) => b.createdAt - a.createdAt);
 
-  res.json(tokens.sort((a, b) => b.createdAt - a.createdAt));
+  res.json(results);
 }
 
 export async function setDefaultToken(req, res) {

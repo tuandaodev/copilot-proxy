@@ -12,4 +12,8 @@ export interface TokenItem {
   token: string;
   createdAt: number;
   default: boolean;
+  meta: {
+    chatQuota: number;
+    completionsQuota: number;
+  };
 }

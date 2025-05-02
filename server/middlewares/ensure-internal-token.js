@@ -1,9 +1,7 @@
 import { COPILOT_TOKEN_API_URL } from '../config.js';
 import { maskToken } from '../libs/mask-token.js';
-import { getSelectedToken } from '../token-storage.js';
-
-// Token cache storing {token, expiresAt} keyed by oauthToken
-const tokenCache = new Map();
+import tokenMeta from '../libs/token-store/copilot-token-meta.js';
+import { getSelectedToken } from '../libs/token-store/token-storage.js';
 
 // Function to check if a cached token is still valid (with 5 min buffer)
 const isTokenValid = (cachedToken) => {
@@ -14,7 +12,7 @@ const isTokenValid = (cachedToken) => {
 
 // Function to get Bearer token using OAuth token
 const getBearerToken = async (oauthToken) => {
-  const cachedToken = tokenCache.get(oauthToken);
+  const cachedToken = tokenMeta.get(oauthToken);
   if (isTokenValid(cachedToken)) {
     return cachedToken.token;
   }
@@ -31,13 +29,15 @@ const getBearerToken = async (oauthToken) => {
     throw new Error(`Failed to fetch token: ${tokenRes.status} ${tokenRes.statusText}`);
   }
 
-  const response = await tokenRes.json();
-  const token = response.token;
-  const expiresAt = response.expires_at
-    ? new Date(response.expires_at).getTime()
-    : Date.now() + 60 * 60 * 1000;
+  const {
+    token,
+    expires_at,
+    limited_user_quotas: { chat: chatQuota, completions: completionsQuota },
+    limited_user_reset_date: resetDate,
+  } = await tokenRes.json();
+  const expiresAt = expires_at ? new Date(expires_at).getTime() : Date.now() + 60 * 60 * 1000;
 
-  tokenCache.set(oauthToken, { token, expiresAt });
+  tokenMeta.set(oauthToken, { token, expiresAt, resetDate, chatQuota, completionsQuota });
   return token;
 };
 
