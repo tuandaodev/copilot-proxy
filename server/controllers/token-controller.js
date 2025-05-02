@@ -1,3 +1,4 @@
+import { maskToken } from '../libs/mask-token.js';
 import { startLogin, startPolling } from '../token-resource.js';
 import * as tokenStorage from '../token-storage.js';
 
@@ -28,7 +29,7 @@ export async function getTokens(req, res) {
   const tokens = await tokenStorage.getTokens();
   const defaultToken = await tokenStorage.getSelectedToken();
   tokens.forEach((item) => {
-    item.token = `${item.token.slice(0, 5)}...${item.token.slice(-5)}`;
+    item.token = maskToken(item.token);
     item.default = defaultToken && defaultToken.id === item.id;
   });
 

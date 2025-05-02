@@ -1,4 +1,6 @@
 import { COPILOT_TOKEN_API_URL } from '../config.js';
+import { maskToken } from '../libs/mask-token.js';
+import { getSelectedToken } from '../token-storage.js';
 
 // Token cache storing {token, expiresAt} keyed by oauthToken
 const tokenCache = new Map();
@@ -12,10 +14,6 @@ const isTokenValid = (cachedToken) => {
 
 // Function to get Bearer token using OAuth token
 const getBearerToken = async (oauthToken) => {
-  if (!oauthToken) {
-    throw new Error('OAuth token is required');
-  }
-
   const cachedToken = tokenCache.get(oauthToken);
   if (isTokenValid(cachedToken)) {
     return cachedToken.token;
@@ -44,13 +42,18 @@ const getBearerToken = async (oauthToken) => {
 };
 
 export async function ensureInternalToken(req, res, next) {
-  if (!req.oauthToken) {
+  const authHeader = req.headers.authorization;
+  const oauthToken =
+    authHeader?.replace(/^(token|Bearer) /, '') || (await getSelectedToken()).token || null;
+
+  if (!oauthToken) {
     res.status(401).send('Do login or provide a GitHub token in the Authorization header');
     return;
   }
+  console.log('Use token:', maskToken(oauthToken));
 
   try {
-    req.bearerToken = await getBearerToken(req.oauthToken);
+    req.bearerToken = await getBearerToken(oauthToken);
     next();
   } catch (error) {
     console.error(`Error fetching Bearer token: ${error.message}`);
