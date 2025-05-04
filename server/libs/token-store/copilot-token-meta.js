@@ -37,7 +37,7 @@ async function fetchAndCacheMeta(oauthToken) {
   } = await tokenRes.json();
   const expiresAt = expires_at ? new Date(expires_at).getTime() : Date.now() + 60 * 60 * 1000;
 
-  meta = { token, expiresAt, resetDate, chatQuota, completionsQuota };
+  meta = { token, expiresAt, resetTime: resetDate * 1000, chatQuota, completionsQuota };
   cacheMap.set(oauthToken, meta);
   await updateMetaByToken(oauthToken, meta);
   return meta;

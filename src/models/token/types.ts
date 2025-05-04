@@ -15,5 +15,6 @@ export interface TokenItem {
   meta: {
     chatQuota: number;
     completionsQuota: number;
+    resetTime: number;
   };
 }
