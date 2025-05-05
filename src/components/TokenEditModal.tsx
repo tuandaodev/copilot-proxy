@@ -1,0 +1,62 @@
+import { renameToken } from '@/models/token/token-item';
+import type { TokenItem } from '@/models/token/types';
+import type { Component } from 'solid-js';
+import { createEffect, createSignal } from 'solid-js';
+import type { Accessor } from 'solid-js/types/server/reactive.js';
+
+const TokenEditModal: Component<{ editingItem: Accessor<TokenItem>; onClose: () => void }> = ({
+  editingItem,
+  onClose,
+}) => {
+  let editModal: HTMLDialogElement | undefined;
+  const [nameInput, setNameInput] = createSignal('');
+
+  createEffect(() => {
+    if (editingItem()) {
+      setNameInput(editingItem().name);
+      editModal.showModal();
+    }
+  });
+  const onClickSave = () => {
+    renameToken(editingItem().id, nameInput());
+  };
+  const onClickClose = () => {
+    if (editModal) {
+      editModal.close();
+      onClose();
+    }
+  };
+  return (
+    <dialog ref={editModal} class="d-modal">
+      <div class="d-modal-box">
+        <fieldset class="d-fieldset">
+          <legend class="d-fieldset-legend">Name</legend>
+          <input
+            type="text"
+            class="d-input"
+            placeholder="Type here"
+            value={nameInput()}
+            onInput={(e) => setNameInput(e.target.value)}
+          />
+        </fieldset>
+        <div class="d-modal-action">
+          <form method="dialog">
+            <button type="button" class="d-btn d-btn-soft d-btn-primary mr-1" onClick={onClickSave}>
+              Save
+            </button>
+            <button type="button" class="d-btn d-btn-ghost" onClick={onClickClose}>
+              Cancel
+            </button>
+          </form>
+        </div>
+      </div>
+      <form method="dialog" class="d-modal-backdrop">
+        <button type="button" onClick={onClickClose}>
+          Close
+        </button>
+      </form>
+    </dialog>
+  );
+};
+
+export default TokenEditModal;

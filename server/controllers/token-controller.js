@@ -27,6 +27,17 @@ export async function createToken(req, res) {
   res.end();
 }
 
+export async function updateTokenName(req, res) {
+  const { id } = req.params;
+  const { name } = req.body;
+  try {
+    await tokenStorage.updateName(id, name);
+  } catch (e) {
+    return res.status(404).end();
+  }
+  res.status(204).end();
+}
+
 export async function removeToken(req, res) {
   const { id } = req.params;
   await tokenStorage.removeToken(id);

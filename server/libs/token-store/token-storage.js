@@ -22,6 +22,14 @@ export async function storeToken({ id, name, token }) {
   await tokenStorage.setItem(item.id, { ...item, name, token });
 }
 
+export async function updateName(id, name) {
+  const item = await tokenStorage.getItem(id);
+  if (!item) {
+    throw new Error('Token not found');
+  }
+  await tokenStorage.setItem(item.id, { ...item, name });
+}
+
 export async function updateMetaByToken(oauthToken, meta) {
   const tokens = await tokenStorage.values();
   const tokenItem = tokens.find((item) => item.token === oauthToken);

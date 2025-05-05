@@ -5,8 +5,9 @@ import BookmarkCheck from 'lucide-solid/icons/bookmark-check';
 import Pencil from 'lucide-solid/icons/pencil';
 import Trash from 'lucide-solid/icons/trash-2';
 import type { Component } from 'solid-js';
-import { For } from 'solid-js';
+import { For, createSignal } from 'solid-js';
 import QuotaInfo from './QuotaInfo';
+import TokenEditModal from './TokenEditModal';
 
 const onClickDelete = (item: TokenItem) => {
   if (window.confirm(`Are you sure to delete the token ${item.name}?`)) {
@@ -18,20 +19,18 @@ const onClickDefault = (item: TokenItem) => {
   setDefaultToken(item.id);
 };
 
-const onClickEdit = (item: TokenItem) => {};
-
 type MenuItemProps = {
   children?: any;
   tooltip: string;
-  onClick: () => void;
+  onClick: any;
 };
 
 const MenuItem: Component<MenuItemProps> = (props: MenuItemProps) => {
   return (
     <div
       class="d-tooltip d-tooltip-top ml-1 cursor-pointer hover:bg-neutral-700 active:bg-neutral-600 transition-colors duration-200 rounded p-1"
-      onClick={() => props.onClick()}
-      onKeyPress={() => props.onClick()}
+      onClick={props.onClick}
+      onKeyPress={props.onClick}
       data-tip={props.tooltip}
     >
       <span class="opacity-60 text-zinc-400">{props.children}</span>
@@ -40,8 +39,15 @@ const MenuItem: Component<MenuItemProps> = (props: MenuItemProps) => {
 };
 
 const TokenList: Component = () => {
+  const [editingItem, setEditingItem] = createSignal(null);
+
+  const showModal = (item: TokenItem) => {
+    setEditingItem(item);
+  };
+
   return (
     <ul class="d-list bg-base-100 rounded-box shadow-md">
+      <TokenEditModal editingItem={editingItem} onClose={() => setEditingItem(null)} />
       <For each={tokenList()}>
         {(item) => (
           <>
@@ -49,7 +55,7 @@ const TokenList: Component = () => {
               <div class="d-list-col-grow">
                 <div class="flex items-center">
                   <div class="text-blue-500 flex-1">{item.name}</div>
-                  <MenuItem onClick={() => onClickEdit(item)} tooltip="Edit">
+                  <MenuItem onClick={() => showModal(item)} tooltip="Edit">
                     <Pencil size={18} />
                   </MenuItem>
                   <MenuItem

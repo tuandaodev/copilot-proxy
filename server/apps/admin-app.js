@@ -4,6 +4,7 @@ import {
   getTokens,
   removeToken,
   setDefaultToken,
+  updateTokenName,
 } from '../controllers/token-controller.js';
 
 const app = new App();
@@ -16,6 +17,7 @@ app
   })
   .post('/token', createToken)
   .put('/tokens/default', setDefaultToken)
+  .patch('/tokens/:id', updateTokenName)
   .get('/tokens', getTokens)
   .delete('/tokens/:id', removeToken);
 

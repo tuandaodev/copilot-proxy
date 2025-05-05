@@ -23,6 +23,14 @@ async function putTokenDefault(id: string) {
   return true;
 }
 
+async function patchTokenName(id: string, name: string) {
+  await fetch(`/admin/tokens/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ name }),
+  });
+  return true;
+}
+
 const [tokenList, { refetch, mutate }] = createResource<TokenItem[]>(fetchTokens);
 
 export const setDefaultToken = async (id: string) => {
@@ -40,6 +48,18 @@ export const setDefaultToken = async (id: string) => {
 export const removeToken = async (id: string) => {
   const succeed = await removeTokenItem(id);
   succeed && mutate((tokens) => tokens.filter((token) => token.id !== id));
+};
+
+export const renameToken = async (id: string, name: string) => {
+  const succeed = await patchTokenName(id, name);
+  if (succeed) {
+    mutate((tokens) =>
+      tokens.map((token) => ({
+        ...token,
+        name: token.id === id ? name : token.name,
+      })),
+    );
+  }
 };
 
 export { tokenList, refetch as refetchTokenList };
