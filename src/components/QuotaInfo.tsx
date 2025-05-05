@@ -12,6 +12,10 @@ function calcUsageRate(quota: number, defaultQuota: number) {
   return Math.floor(100 - (quota / defaultQuota) * 100);
 }
 
+function getProgressStyle(usageRate: number): string {
+  return usageRate < 80 ? 'info' : usageRate < 90 ? 'warning' : 'error';
+}
+
 function formatResetTime(time: number) {
   if (!time) return 'N/A';
   return new Date(time).toLocaleDateString('en-US', {
@@ -42,7 +46,7 @@ const QuotaInfo: Component<QuotaInfoProps> = (props: { item: TokenItem }) => {
         </span>
       </div>
       <progress
-        class="d-progress d-progress-info block mt-1 mb-2 h-[5px]"
+        class={`d-progress d-progress-${getProgressStyle(chatUsageRate)} block mt-1 mb-2 h-[5px]`}
         value={chatUsageRate}
         max="100"
       />
@@ -56,7 +60,7 @@ const QuotaInfo: Component<QuotaInfoProps> = (props: { item: TokenItem }) => {
         </span>
       </div>
       <progress
-        class="d-progress d-progress-info block mt-1 mb-2 h-[5px]"
+        class={`d-progress d-progress-${getProgressStyle(completionsUsageRate)} block mt-1 mb-2 h-[5px]`}
         value={completionsUsageRate}
         max="100"
       />
