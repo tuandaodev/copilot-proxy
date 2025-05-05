@@ -2,6 +2,7 @@ import { removeToken, setDefaultToken, tokenList } from '@/models/token/token-it
 import type { TokenItem } from '@/models/token/types';
 import Bookmark from 'lucide-solid/icons/bookmark';
 import BookmarkCheck from 'lucide-solid/icons/bookmark-check';
+import Pencil from 'lucide-solid/icons/pencil';
 import Trash from 'lucide-solid/icons/trash-2';
 import type { Component } from 'solid-js';
 import { For } from 'solid-js';
@@ -17,6 +18,27 @@ const onClickDefault = (item: TokenItem) => {
   setDefaultToken(item.id);
 };
 
+const onClickEdit = (item: TokenItem) => {};
+
+type MenuItemProps = {
+  children?: any;
+  tooltip: string;
+  onClick: () => void;
+};
+
+const MenuItem: Component<MenuItemProps> = (props: MenuItemProps) => {
+  return (
+    <div
+      class="d-tooltip d-tooltip-top ml-1 cursor-pointer hover:bg-neutral-700 active:bg-neutral-600 transition-colors duration-200 rounded p-1"
+      onClick={() => props.onClick()}
+      onKeyPress={() => props.onClick()}
+      data-tip={props.tooltip}
+    >
+      <span class="opacity-60 text-zinc-400">{props.children}</span>
+    </div>
+  );
+};
+
 const TokenList: Component = () => {
   return (
     <ul class="d-list bg-base-100 rounded-box shadow-md">
@@ -27,26 +49,22 @@ const TokenList: Component = () => {
               <div class="d-list-col-grow">
                 <div class="flex items-center">
                   <div class="text-blue-500 flex-1">{item.name}</div>
-                  <div
-                    class="d-tooltip d-tooltip-top cursor-pointer hover:bg-neutral-700 active:bg-neutral-600 transition-colors duration-200 rounded p-1"
+                  <MenuItem onClick={() => onClickEdit(item)} tooltip="Edit">
+                    <Pencil size={18} />
+                  </MenuItem>
+                  <MenuItem
                     onClick={() => onClickDefault(item)}
-                    onKeyPress={() => onClickDefault(item)}
-                    data-tip={item.default ? 'Default' : 'Set as default'}
+                    tooltip={item.default ? 'Default token' : 'Set as default'}
                   >
                     {item.default ? (
-                      <BookmarkCheck size={18} class="text-emerald-400 opacity-60" />
+                      <BookmarkCheck size={18} class="text-emerald-400" />
                     ) : (
-                      <Bookmark size={18} class="text-zinc-400 opacity-60" />
+                      <Bookmark size={18} />
                     )}
-                  </div>
-                  <div
-                    onClick={() => onClickDelete(item)}
-                    onKeyPress={() => onClickDelete(item)}
-                    class="d-tooltip d-tooltip-top ml-1 cursor-pointer hover:bg-neutral-700 active:bg-neutral-600 transition-colors duration-200 rounded p-1"
-                    data-tip="Delete"
-                  >
-                    <Trash size={18} class="text-rose-400 opacity-60" />
-                  </div>
+                  </MenuItem>
+                  <MenuItem onClick={() => onClickDelete(item)} tooltip="Delete">
+                    <Trash size={18} class="text-rose-400" />
+                  </MenuItem>
                 </div>
                 <div class="text-zinc-400">{item.token}</div>
                 <div class="text-zinc-500 text-xs my-2">
