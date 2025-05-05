@@ -5,6 +5,7 @@ import BookmarkCheck from 'lucide-solid/icons/bookmark-check';
 import Trash from 'lucide-solid/icons/trash-2';
 import type { Component } from 'solid-js';
 import { For } from 'solid-js';
+import QuotaInfo from './QuotaInfo';
 
 const onClickDelete = (item: TokenItem) => {
   if (window.confirm(`Are you sure to delete the token ${item.name}?`)) {
@@ -14,44 +15,6 @@ const onClickDelete = (item: TokenItem) => {
 
 const onClickDefault = (item: TokenItem) => {
   setDefaultToken(item.id);
-};
-
-type QuotaInfoProps = {
-  item: TokenItem;
-};
-
-const QuotaInfo: Component<QuotaInfoProps> = (props: { item: TokenItem }) => {
-  const { chatQuota = 0, completionsQuota = 0, resetTime } = props.item.meta || {};
-  const DEFAULT_CHAT_QUOTA = 500;
-  const DEFAULT_COMPLETIONS_QUOTA = 4000;
-  const chatUsageRate = Math.floor(100 - (chatQuota / DEFAULT_CHAT_QUOTA) * 100);
-  const completionsUsageRate = Math.floor(
-    100 - (completionsQuota / DEFAULT_COMPLETIONS_QUOTA) * 100,
-  );
-  return (
-    <div class="w-60 text-zinc-400">
-      <div class="font-bold">Copilot Free Plan Usage</div>
-      <div class="flex">
-        <span class="flex-1">Chat messages</span>
-        <span>{chatUsageRate}%</span>
-      </div>
-      <progress
-        class="d-progress d-progress-info block mt-1 mb-2 h-[5px]"
-        value={chatUsageRate}
-        max="100"
-      />
-      <div class="flex">
-        <span class="flex-1">Code completions</span>
-        <span>{completionsUsageRate}%</span>
-      </div>
-      <progress
-        class="d-progress d-progress-info block mt-1 mb-2 h-[5px]"
-        value={completionsUsageRate}
-        max="100"
-      />
-      <div>Limits will reset on {new Date(resetTime).toLocaleDateString()}.</div>
-    </div>
-  );
 };
 
 const TokenList: Component = () => {
