@@ -1,6 +1,6 @@
 {
   "name": "copilot-proxy",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "HTTP proxy for GitHub Copilot API",
   "author": "Hank Chiu (https://hankchiu.tw)",
   "homepage": "https://github.com/hankchiutw/copilot-proxy",
@@ -8,7 +8,7 @@
   "type": "module",
   "main": "server.js",
   "bin": {
-    "copilot-proxy": "./server.js"
+    "copilot-proxy": "server.js"
   },
   "files": ["dist", "server", "READEME.md", "package.json"],
   "scripts": {
