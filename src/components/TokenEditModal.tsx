@@ -9,12 +9,14 @@ const TokenEditModal: Component<{ editingItem: Accessor<TokenItem>; onClose: () 
   onClose,
 }) => {
   let editModal: HTMLDialogElement | undefined;
+  let inputRef: HTMLInputElement;
   const [nameInput, setNameInput] = createSignal('');
 
   createEffect(() => {
     if (editingItem()) {
       setNameInput(editingItem().name);
       editModal.showModal();
+      setTimeout(() => inputRef.focus(), 100);
     }
   });
   const onClickSave = () => {
@@ -24,16 +26,16 @@ const TokenEditModal: Component<{ editingItem: Accessor<TokenItem>; onClose: () 
   const onClickClose = () => {
     if (editModal) {
       editModal.close();
-      onClose();
     }
   };
   return (
-    <dialog ref={editModal} class="d-modal">
+    <dialog ref={editModal} class="d-modal" onClose={onClose}>
       <div class="d-modal-box">
         <h3 class="text-lg font-bold">Edit token</h3>
         <fieldset class="d-fieldset">
           <legend class="d-fieldset-legend">Name</legend>
           <input
+            ref={inputRef}
             type="text"
             class="d-input"
             placeholder="Type here"

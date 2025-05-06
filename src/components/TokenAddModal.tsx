@@ -8,12 +8,14 @@ const TokenAddModal: Component<{ isOpen: Accessor<boolean>; onClose: () => void 
   onClose,
 }) => {
   let modalRef: HTMLDialogElement | undefined;
+  let nameInputRef: HTMLInputElement;
   const [nameInput, setNameInput] = createSignal('');
   const [tokenInput, setTokenInput] = createSignal('');
 
   createEffect(() => {
     if (isOpen()) {
       modalRef.showModal();
+      setTimeout(() => nameInputRef.focus(), 100);
     }
   });
   const onClickSave = () => {
@@ -23,19 +25,19 @@ const TokenAddModal: Component<{ isOpen: Accessor<boolean>; onClose: () => void 
   const onClickClose = () => {
     if (modalRef) {
       modalRef.close();
-      onClose();
     }
   };
   const onKeyDown = (e) => {
     e.key === 'Enter' && onClickSave();
   };
   return (
-    <dialog ref={modalRef} class="d-modal">
+    <dialog ref={modalRef} class="d-modal" onClose={onClose}>
       <div class="d-modal-box">
         <h3 class="text-lg font-bold">Add new token manually</h3>
         <fieldset class="d-fieldset">
           <legend class="d-fieldset-legend">Name</legend>
           <input
+            ref={nameInputRef}
             type="text"
             class="d-input"
             placeholder="Type here"
