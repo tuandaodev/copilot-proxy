@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import 'dotenv/config';
+import path from 'node:path';
 import { App } from '@tinyhttp/app';
 import { json } from 'milliparsec';
 import sirv from 'sirv';
@@ -17,7 +18,7 @@ const app = new App();
 // Set up the app with middleware
 app
   .use(logHttp) // Add request logging
-  .use(sirv('dist', { dev: process.env.NODE_ENV !== 'production' })) // Serve static files
+  .use(sirv(path.resolve('./dist'), { dev: process.env.NODE_ENV !== 'production' })) // Serve static files
   .use('/admin', json(), adminApp)
   .use('/api', proxyApp);
 
