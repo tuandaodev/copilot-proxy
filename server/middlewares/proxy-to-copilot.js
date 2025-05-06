@@ -1,5 +1,7 @@
-import fetch from 'node-fetch';
+import { Writable } from 'node:stream';
+
 import { COPILOT_API_HOST, COPILOT_HEADERS } from '../config.js';
+import { log } from '../libs/logger.js';
 
 export const proxyToCopilot = async (req, res) => {
   try {
@@ -14,10 +16,11 @@ export const proxyToCopilot = async (req, res) => {
         host: COPILOT_API_HOST,
       },
       body: ['GET', 'HEAD'].includes(req.method) ? undefined : req,
+      duplex: 'half',
     };
 
     const targetUrl = `https://${COPILOT_API_HOST}${parsedUrl.pathname}${parsedUrl.search}`;
-    console.log(`Proxying to: ${targetUrl}`);
+    log.info(`Proxying to: ${targetUrl}`);
 
     const response = await fetch(targetUrl, options);
 
@@ -27,13 +30,13 @@ export const proxyToCopilot = async (req, res) => {
     });
 
     if (response.body) {
-      response.body.pipe(res);
+      response.body.pipeTo(Writable.toWeb(res));
     } else {
       const data = await response.text();
       res.send(data);
     }
   } catch (error) {
-    console.error(`Proxy error: ${error.message}`);
+    log.error(`Proxy error: ${error.message}`);
     res.status(500).send(`Proxy error: ${error.message}`);
   }
 };
