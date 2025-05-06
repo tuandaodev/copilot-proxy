@@ -31,6 +31,14 @@ async function patchTokenName(id: string, name: string) {
   return true;
 }
 
+async function postToken(name: string, token: string) {
+  const res = await fetch('/admin/tokens', {
+    method: 'POST',
+    body: JSON.stringify({ name, token }),
+  });
+  return res.json();
+}
+
 const [tokenList, { refetch, mutate }] = createResource<TokenItem[]>(fetchTokens);
 
 export const setDefaultToken = async (id: string) => {
@@ -60,6 +68,11 @@ export const renameToken = async (id: string, name: string) => {
       })),
     );
   }
+};
+
+export const addToken = async (name: string, token: string) => {
+  const addedToken = await postToken(name, token);
+  mutate((tokens) => [addedToken, ...tokens]);
 };
 
 export { tokenList, refetch as refetchTokenList };

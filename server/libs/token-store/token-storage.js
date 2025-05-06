@@ -20,6 +20,7 @@ export async function storeToken({ id, name, token }) {
     ? await tokenStorage.getItem(id)
     : { id: uuid(), name, token, createdAt: Date.now() };
   await tokenStorage.setItem(item.id, { ...item, name, token });
+  return await tokenStorage.getItem(item.id);
 }
 
 export async function updateName(id, name) {

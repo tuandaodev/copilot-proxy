@@ -7,6 +7,7 @@ import Trash from 'lucide-solid/icons/trash-2';
 import type { Component } from 'solid-js';
 import { For, createSignal } from 'solid-js';
 import QuotaInfo from './QuotaInfo';
+import TokenAddModal from './TokenAddModal';
 import TokenEditModal from './TokenEditModal';
 
 const onClickDelete = (item: TokenItem) => {
@@ -40,6 +41,7 @@ const MenuItem: Component<MenuItemProps> = (props: MenuItemProps) => {
 
 const TokenList: Component = () => {
   const [editingItem, setEditingItem] = createSignal(null);
+  const [isAdding, setIsAdding] = createSignal(false);
 
   const showModal = (item: TokenItem) => {
     setEditingItem(item);
@@ -48,6 +50,14 @@ const TokenList: Component = () => {
   return (
     <ul class="d-list bg-base-100 rounded-box shadow-md">
       <TokenEditModal editingItem={editingItem} onClose={() => setEditingItem(null)} />
+      <TokenAddModal isOpen={isAdding} onClose={() => setIsAdding(false)} />
+      <div
+        onClick={() => setIsAdding(true)}
+        onKeyPress={() => setIsAdding(true)}
+        class="d-tooltip d-tooltip-top my-3 text-center rounded-sm text-xs hover:bg-zinc-700 cursor-pointer active:bg-zinc-600 transition-colors duration-200"
+      >
+        ＋
+      </div>
       <For each={tokenList()}>
         {(item) => (
           <>

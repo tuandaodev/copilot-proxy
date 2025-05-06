@@ -1,35 +1,35 @@
-import { renameToken } from '@/models/token/token-item';
-import type { TokenItem } from '@/models/token/types';
+import { addToken } from '@/models/token/token-item';
 import type { Component } from 'solid-js';
 import { createEffect, createSignal } from 'solid-js';
 import type { Accessor } from 'solid-js/types/server/reactive.js';
 
-const TokenEditModal: Component<{ editingItem: Accessor<TokenItem>; onClose: () => void }> = ({
-  editingItem,
+const TokenAddModal: Component<{ isOpen: Accessor<boolean>; onClose: () => void }> = ({
+  isOpen,
   onClose,
 }) => {
-  let editModal: HTMLDialogElement | undefined;
+  let modalRef: HTMLDialogElement | undefined;
   const [nameInput, setNameInput] = createSignal('');
+  const [tokenInput, setTokenInput] = createSignal('');
 
   createEffect(() => {
-    if (editingItem()) {
-      setNameInput(editingItem().name);
-      editModal.showModal();
+    if (isOpen()) {
+      modalRef.showModal();
     }
   });
   const onClickSave = () => {
-    renameToken(editingItem().id, nameInput());
+    addToken(nameInput(), tokenInput());
     onClickClose();
   };
   const onClickClose = () => {
-    if (editModal) {
-      editModal.close();
+    if (modalRef) {
+      modalRef.close();
       onClose();
     }
   };
   return (
-    <dialog ref={editModal} class="d-modal">
+    <dialog ref={modalRef} class="d-modal">
       <div class="d-modal-box">
+        <h3 class="text-lg font-bold">Add new token manually</h3>
         <fieldset class="d-fieldset">
           <legend class="d-fieldset-legend">Name</legend>
           <input
@@ -38,6 +38,16 @@ const TokenEditModal: Component<{ editingItem: Accessor<TokenItem>; onClose: () 
             placeholder="Type here"
             value={nameInput()}
             onInput={(e) => setNameInput(e.target.value)}
+          />
+        </fieldset>
+        <fieldset class="d-fieldset">
+          <legend class="d-fieldset-legend">Token</legend>
+          <input
+            type="text"
+            class="d-input"
+            placeholder="Type here"
+            value={tokenInput()}
+            onInput={(e) => setTokenInput(e.target.value)}
           />
         </fieldset>
         <div class="d-modal-action">
@@ -60,4 +70,4 @@ const TokenEditModal: Component<{ editingItem: Accessor<TokenItem>; onClose: () 
   );
 };
 
-export default TokenEditModal;
+export default TokenAddModal;

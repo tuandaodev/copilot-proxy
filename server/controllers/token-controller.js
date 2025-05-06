@@ -27,6 +27,19 @@ export async function createToken(req, res) {
   res.end();
 }
 
+export async function addToken(req, res) {
+  const { name, token } = req.body;
+  if (!name || !token) {
+    return res.status(400).end();
+  }
+  try {
+    const item = await tokenStorage.storeToken({ name, token });
+    res.json(transformTokenItem(item));
+  } catch (e) {
+    return res.status(409).end();
+  }
+}
+
 export async function updateTokenName(req, res) {
   const { id } = req.params;
   const { name } = req.body;
