@@ -1,39 +1,42 @@
-# GitHub Copilot Proxy
+# Copilot Proxy
 
-A simple HTTP proxy that forwards requests to the GitHub Copilot API and appends custom headers.
+A simple HTTP proxy that exposes your GitHub Copilot free quota as an OpenAI-compatible API.
 
 ## Features
 
 - Proxies requests to `https://api.githubcopilot.com`
-- Appends custom headers:
-  - `Editor-Version`
-  - `Copilot-Integration-Id`
-- Maintains original request headers and body
+  - Support endpoint `/chat/completion`
+- User-friendly admin UI:
+  - Log in with GitHub and generate tokens
+  - Add tokens manually
+  - Manage multiple tokens with ease
+  - View chat message and code completion usage statistics
 
-## Installation
+## How to use
+- Start the proxy server by `npx`
+    ```bash
+    npx copilot-proxy
 
-```bash
-npm install
-```
+    ```
+- Browse `http://localhost:3000` to generate the token by following the instructions.
+  - Or add your own token manually.
 
-## Usage
-
-Start the proxy server:
-
-```bash
-npm start
-```
-
-The proxy server runs on port 3000 by default. You can point your application to `http://localhost:3000` instead of `https://api.githubcopilot.com`.
-
-## Configuration
-
-Edit the `main.js` file to modify:
-
-- `PORT`: The local port to run the proxy on (default: 3000)
-- `TARGET_HOST`: The target API host (default: api.githubcopilot.com)
-- `CUSTOM_HEADERS`: The headers to append to each request
+- Your OpenAI-compatible API base URL is `http://localhost:3000/api`
+  - You can test it like this: (no need authorization header since you've set a default token!)
+  ```
+  curl --request POST \
+  --url http://localhost:3000/api/chat/completions \
+  --header 'content-type: application/json' \
+  --data '{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hi"
+    }
+  ],
+  "model": "gpt-4.1"}'
+  ```
 
 ## Requirements
 
-- Node.js 14.0.0 or higher 
+- Node.js 22 or higher 

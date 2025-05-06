@@ -2,6 +2,9 @@
   "name": "copilot-proxy",
   "version": "1.0.0",
   "description": "HTTP proxy for GitHub Copilot API",
+  "author": "Hank Chiu (https://hankchiu.tw)",
+  "homepage": "https://github.com/hankchiutw/copilot-proxy",
+  "license": "MIT",
   "type": "module",
   "main": "server.js",
   "bin": {
@@ -45,6 +48,6 @@
     "vite-plugin-solid": "^2.11.6"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=22.0.0"
   }
 }
