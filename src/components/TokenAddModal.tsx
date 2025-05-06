@@ -26,6 +26,9 @@ const TokenAddModal: Component<{ isOpen: Accessor<boolean>; onClose: () => void 
       onClose();
     }
   };
+  const onKeyDown = (e) => {
+    e.key === 'Enter' && onClickSave();
+  };
   return (
     <dialog ref={modalRef} class="d-modal">
       <div class="d-modal-box">
@@ -38,6 +41,7 @@ const TokenAddModal: Component<{ isOpen: Accessor<boolean>; onClose: () => void 
             placeholder="Type here"
             value={nameInput()}
             onInput={(e) => setNameInput(e.target.value)}
+            onKeyDown={onKeyDown}
           />
         </fieldset>
         <fieldset class="d-fieldset">
@@ -48,6 +52,7 @@ const TokenAddModal: Component<{ isOpen: Accessor<boolean>; onClose: () => void 
             placeholder="Type here"
             value={tokenInput()}
             onInput={(e) => setTokenInput(e.target.value)}
+            onKeyDown={onKeyDown}
           />
         </fieldset>
         <div class="d-modal-action">

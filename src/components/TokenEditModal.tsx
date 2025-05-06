@@ -30,6 +30,7 @@ const TokenEditModal: Component<{ editingItem: Accessor<TokenItem>; onClose: () 
   return (
     <dialog ref={editModal} class="d-modal">
       <div class="d-modal-box">
+        <h3 class="text-lg font-bold">Edit token</h3>
         <fieldset class="d-fieldset">
           <legend class="d-fieldset-legend">Name</legend>
           <input
@@ -38,6 +39,7 @@ const TokenEditModal: Component<{ editingItem: Accessor<TokenItem>; onClose: () 
             placeholder="Type here"
             value={nameInput()}
             onInput={(e) => setNameInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && onClickSave()}
           />
         </fieldset>
         <div class="d-modal-action">
