@@ -11,11 +11,6 @@ import {
 const app = new App();
 
 app
-  .use((req, res, next) => {
-    // Middleware to handle admin app requests
-    console.log('Admin app middleware');
-    next();
-  })
   .post('/token', createToken) // TODO: rename
   .post('/tokens', addToken)
   .put('/tokens/default', setDefaultToken)

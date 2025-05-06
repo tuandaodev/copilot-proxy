@@ -1,3 +1,5 @@
+import { log } from './libs/logger.js';
+
 const CLIENT_ID = 'Iv1.b507a08c87ecfe98';
 const MANDATORY_HEADERS = Object.freeze({
   accept: 'application/json',
@@ -58,13 +60,7 @@ async function startDeviceLogin() {
 
 async function pollForToken() {
   while (state.polling) {
-    console.log(
-      'Polling for token for device code',
-      state.deviceCode,
-      ' remaining time:',
-      state.expiresAt - Date.now(),
-      'ms',
-    );
+    log.info(state, 'Polling for token for device code');
     if (Date.now() > state.expiresAt) {
       resetWithMessage('Device code expired.');
       return state;

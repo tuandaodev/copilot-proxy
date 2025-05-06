@@ -1,3 +1,4 @@
+import { log } from '../libs/logger.js';
 import { maskToken } from '../libs/mask-token.js';
 import { getBearerToken } from '../libs/token-store/copilot-token-meta.js';
 import { getSelectedToken } from '../libs/token-store/token-storage.js';
@@ -11,13 +12,13 @@ export async function ensureInternalToken(req, res, next) {
     res.status(401).send('Do login or provide a GitHub token in the Authorization header');
     return;
   }
-  console.log('Use token:', maskToken(oauthToken));
+  log.info({ 'Use token': maskToken(oauthToken) });
 
   try {
     req.bearerToken = await getBearerToken(oauthToken);
     next();
   } catch (error) {
-    console.error(`Error fetching Bearer token from ${oauthToken}: ${error.message}`);
+    log.error(`Error fetching Bearer token from ${oauthToken}: ${error.message}`);
     res.status(500).send(`Internal server error: ${error.message}`);
   }
 }
