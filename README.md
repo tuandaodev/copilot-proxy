@@ -2,7 +2,8 @@
 
 A simple HTTP proxy that exposes your GitHub Copilot free quota as an OpenAI-compatible API.
 
-<img src="./screenshot.png" width="600">
+<img src="https://raw.githubusercontent.com/hankchiutw/copilot-proxy/main/screenshot.png" width="600">
+
 
 ## Why?
 - You have a lot of free quota on GitHub Copilot, you want to use it like OpenAI-compatible APIs.
@@ -52,5 +53,11 @@ A simple HTTP proxy that exposes your GitHub Copilot free quota as an OpenAI-com
 ## Requirements
 
 - Node.js 22 or higher 
+
+## References
+- https://www.npmjs.com/package/@github/copilot-language-server
+- https://github.com/B00TK1D/copilot-api
+- https://github.com/ericc-ch/copilot-api
+- https://hub.docker.com/r/mouxan/copilot
 
 > Licensed under the [MIT License](./LICENSE).

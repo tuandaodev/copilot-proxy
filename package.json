@@ -1,10 +1,11 @@
 {
   "name": "copilot-proxy",
-  "version": "1.0.5",
+  "version": "1.0.8",
   "description": "HTTP proxy for GitHub Copilot API",
   "author": "Hank Chiu (https://hankchiu.tw)",
   "homepage": "https://github.com/hankchiutw/copilot-proxy",
   "license": "MIT",
+  "keywords": ["copilot", "proxy", "openai"],
   "type": "module",
   "main": "server.js",
   "bin": {
