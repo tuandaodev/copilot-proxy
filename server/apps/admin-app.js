@@ -3,6 +3,7 @@ import {
   addToken,
   createToken,
   getTokens,
+  refreshTokenMeta,
   removeToken,
   setDefaultToken,
   updateTokenName,
@@ -15,6 +16,7 @@ app
   .post('/tokens', addToken)
   .put('/tokens/default', setDefaultToken)
   .patch('/tokens/:id', updateTokenName)
+  .put('/tokens/:id/meta', refreshTokenMeta)
   .get('/tokens', getTokens)
   .delete('/tokens/:id', removeToken);
 

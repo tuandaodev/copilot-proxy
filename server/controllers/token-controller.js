@@ -1,4 +1,5 @@
 import { maskToken } from '../libs/mask-token.js';
+import { refreshMeta } from '../libs/token-store/copilot-token-meta.js';
 import * as tokenStorage from '../libs/token-store/token-storage.js';
 import { startLogin, startPolling } from '../token-resource.js';
 
@@ -49,6 +50,17 @@ export async function updateTokenName(req, res) {
     return res.status(404).end();
   }
   res.status(204).end();
+}
+
+export async function refreshTokenMeta(req, res) {
+  const { id } = req.params;
+  try {
+    const { token } = await tokenStorage.getToken(id);
+    const meta = await refreshMeta(token);
+    res.json(meta);
+  } catch (e) {
+    return res.status(404).end();
+  }
 }
 
 export async function removeToken(req, res) {

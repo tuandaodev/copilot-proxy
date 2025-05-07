@@ -23,6 +23,10 @@ export async function storeToken({ id, name, token }) {
   return await tokenStorage.getItem(item.id);
 }
 
+export async function getToken(id) {
+  return await tokenStorage.getItem(id);
+}
+
 export async function updateName(id, name) {
   const item = await tokenStorage.getItem(id);
   if (!item) {

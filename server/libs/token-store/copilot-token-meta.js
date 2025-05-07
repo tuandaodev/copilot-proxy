@@ -11,13 +11,8 @@ const isTokenValid = (meta) => {
   return Date.now() < meta.expiresAt - bufferDuration;
 };
 
-async function fetchAndCacheMeta(oauthToken) {
-  let meta = cacheMap.get(oauthToken);
-  if (isTokenValid(meta)) {
-    return meta;
-  }
-
-  const tokenRes = await fetch(COPILOT_TOKEN_API_URL, {
+async function fetchMeta(oauthToken) {
+  const res = await fetch(COPILOT_TOKEN_API_URL, {
     method: 'GET',
     headers: {
       'User-Agent': 'CopilotProxy',
@@ -25,8 +20,8 @@ async function fetchAndCacheMeta(oauthToken) {
     },
   });
 
-  if (!tokenRes.ok) {
-    throw new Error(`Failed to fetch token: ${tokenRes.status} ${tokenRes.statusText}`);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch token: ${res.status} ${res.statusText}`);
   }
 
   const {
@@ -34,16 +29,24 @@ async function fetchAndCacheMeta(oauthToken) {
     expires_at,
     limited_user_quotas: { chat: chatQuota, completions: completionsQuota },
     limited_user_reset_date: resetDate,
-  } = await tokenRes.json();
+  } = await res.json();
   const expiresAt = expires_at ? new Date(expires_at).getTime() : Date.now() + 60 * 60 * 1000;
 
-  meta = { token, expiresAt, resetTime: resetDate * 1000, chatQuota, completionsQuota };
+  return { token, expiresAt, resetTime: resetDate * 1000, chatQuota, completionsQuota };
+}
+
+export async function refreshMeta(oauthToken) {
+  const meta = await fetchMeta(oauthToken);
+
   cacheMap.set(oauthToken, meta);
   await updateMetaByToken(oauthToken, meta);
   return meta;
 }
 
 export async function getBearerToken(oauthToken) {
-  const meta = await fetchAndCacheMeta(oauthToken);
+  let meta = cacheMap.get(oauthToken);
+  if (!isTokenValid(meta)) {
+    meta = await refreshMeta(oauthToken);
+  }
   return meta.token;
 }

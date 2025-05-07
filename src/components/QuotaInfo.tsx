@@ -1,4 +1,6 @@
+import { refreshTokenMeta } from '@/models/token/token-item';
 import type { TokenItem } from '@/models/token/types';
+import Refresh from 'lucide-solid/icons/rotate-ccw';
 import type { Component } from 'solid-js';
 
 type QuotaInfoProps = {
@@ -35,7 +37,14 @@ const QuotaInfo: Component<QuotaInfoProps> = (props: { item: TokenItem }) => {
   const completionsUsageRate = calcUsageRate(completionsQuota, DEFAULT_COMPLETIONS_QUOTA);
   return (
     <div class="w-60 text-zinc-400">
-      <div class="font-bold">Copilot Free Plan Usage</div>
+      <div class="font-bold flex mb-1 items-center">
+        <span class="flex-1">Copilot Free Plan Usage</span>
+        <Refresh
+          class="cursor-pointer hover:text-zinc-300"
+          onClick={() => refreshTokenMeta(props.item.id)}
+          size={12}
+        />
+      </div>
       <div class="flex">
         <span class="flex-1">Chat messages</span>
         <span

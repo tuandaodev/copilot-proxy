@@ -23,6 +23,13 @@ async function putTokenDefault(id: string) {
   return true;
 }
 
+async function putTokenMeta(id: string) {
+  const res = await fetch(`/admin/tokens/${id}/meta`, {
+    method: 'PUT',
+  });
+  return res.json();
+}
+
 async function patchTokenName(id: string, name: string) {
   await fetch(`/admin/tokens/${id}`, {
     method: 'PATCH',
@@ -68,6 +75,16 @@ export const renameToken = async (id: string, name: string) => {
       })),
     );
   }
+};
+
+export const refreshTokenMeta = async (id: string) => {
+  const meta = await putTokenMeta(id);
+  mutate((tokens) =>
+    tokens.map((token) => ({
+      ...token,
+      meta: token.id === id ? meta : token.meta,
+    })),
+  );
 };
 
 export const addToken = async (name: string, token: string) => {
