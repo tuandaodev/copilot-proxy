@@ -36,16 +36,18 @@ A simple HTTP proxy that exposes your GitHub Copilot free quota as an OpenAI-com
   ```
   curl --request POST --url http://localhost:3000/api/chat/completions --header 'content-type: application/json' \
   --data '{
-  "model": "gpt-4.1",
-  "messages": [
-    {
-      "role": "user",
-      "content": "Hi"
-    }
-  ] }'
+      "model": "gpt-4",
+      "messages": [{"role": "user", "content": "Hi"}]
+  }'
   ```
+    - Note: For `gpt-4.1` model, you need to set `"stream": true` in the request body. See https://github.com/hankchiutw/copilot-proxy/issues/2#issuecomment-2896408253
   - You still can set a token in the request header `authorization: Bearer <token>` and it will override the default token.
 - (Optional) Use environment variable `PORT` for setting different port other than `3000`.
+
+## Advanced usage
+- For some LLM clients, it is mandatory to provide an non-empty API key. In that case you can use a special dummy token `_` to make copilot-proxy use the default token.
+- The token is stored locally under `some/path/to/node_modules/copilot-proxy/.storage`. Be sure to backup this directory if you want to keep your tokens.
+    - Note: even you delete the `.storage` folder, the token is still functionable from GitHub Copilot.(That is how Github Copilot works at the moment.)
 
 ## Use cases
 - Use with [LLM](https://llm.datasette.io/en/stable/other-models.html#openai-compatible-models) CLI locally.
