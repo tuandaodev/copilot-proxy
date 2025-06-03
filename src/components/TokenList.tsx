@@ -5,7 +5,7 @@ import BookmarkCheck from 'lucide-solid/icons/bookmark-check';
 import Pencil from 'lucide-solid/icons/pencil';
 import Trash from 'lucide-solid/icons/trash-2';
 import type { Component } from 'solid-js';
-import { For, createSignal } from 'solid-js';
+import { ErrorBoundary, For, createSignal } from 'solid-js';
 import QuotaInfo from './QuotaInfo';
 import TokenAddModal from './TokenAddModal';
 import TokenEditModal from './TokenEditModal';
@@ -58,40 +58,42 @@ const TokenList: Component = () => {
       >
         ＋
       </div>
-      <For each={tokenList()}>
-        {(item) => (
-          <>
-            <li class="d-list-row border rounded-lg mb-4 border-zinc-600">
-              <div class="d-list-col-grow">
-                <div class="flex items-center">
-                  <div class="text-blue-500 flex-1">{item.name}</div>
-                  <MenuItem onClick={() => showModal(item)} tooltip="Edit">
-                    <Pencil size={18} />
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => onClickDefault(item)}
-                    tooltip={item.default ? 'Default token' : 'Set as default'}
-                  >
-                    {item.default ? (
-                      <BookmarkCheck size={18} class="text-emerald-400" />
-                    ) : (
-                      <Bookmark size={18} />
-                    )}
-                  </MenuItem>
-                  <MenuItem onClick={() => onClickDelete(item)} tooltip="Delete">
-                    <Trash size={18} class="text-rose-400" />
-                  </MenuItem>
+      <ErrorBoundary fallback={<div>Something went wrong</div>}>
+        <For each={tokenList()}>
+          {(item) => (
+            <>
+              <li class="d-list-row border rounded-lg mb-4 border-zinc-600">
+                <div class="d-list-col-grow">
+                  <div class="flex items-center">
+                    <div class="text-blue-500 flex-1">{item.name}</div>
+                    <MenuItem onClick={() => showModal(item)} tooltip="Edit">
+                      <Pencil size={18} />
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => onClickDefault(item)}
+                      tooltip={item.default ? 'Default token' : 'Set as default'}
+                    >
+                      {item.default ? (
+                        <BookmarkCheck size={18} class="text-emerald-400" />
+                      ) : (
+                        <Bookmark size={18} />
+                      )}
+                    </MenuItem>
+                    <MenuItem onClick={() => onClickDelete(item)} tooltip="Delete">
+                      <Trash size={18} class="text-rose-400" />
+                    </MenuItem>
+                  </div>
+                  <div class="text-zinc-400">{item.token}</div>
+                  <div class="text-zinc-500 text-xs my-2">
+                    Created at: {new Date(item.createdAt).toLocaleString()}
+                  </div>
                 </div>
-                <div class="text-zinc-400">{item.token}</div>
-                <div class="text-zinc-500 text-xs my-2">
-                  Created at: {new Date(item.createdAt).toLocaleString()}
-                </div>
-              </div>
-              <QuotaInfo item={item} />
-            </li>
-          </>
-        )}
-      </For>
+                <QuotaInfo item={item} />
+              </li>
+            </>
+          )}
+        </For>
+      </ErrorBoundary>
     </ul>
   );
 };
