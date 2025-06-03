@@ -1,7 +1,7 @@
-import { maskToken } from '../libs/mask-token.js';
-import { refreshMeta } from '../libs/token-store/copilot-token-meta.js';
-import * as tokenStorage from '../libs/token-store/token-storage.js';
-import { startLogin, startPolling } from '../token-resource.js';
+import { maskToken } from '@/server/libs/mask-token.js';
+import { refreshMeta } from '@/server/libs/token-store/copilot-token-meta.js';
+import * as tokenStorage from '@/server/libs/token-store/token-storage.js';
+import { startLogin, startPolling } from '@/server/token-resource.js';
 
 function transformTokenItem(tokenItem, defaultToken) {
   return {

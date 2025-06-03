@@ -1,7 +1,7 @@
 import { Writable } from 'node:stream';
 
-import { COPILOT_API_HOST, COPILOT_HEADERS } from '../config.js';
-import { log } from '../libs/logger.js';
+import { COPILOT_API_HOST, COPILOT_HEADERS } from '@/server/config.js';
+import { log } from '@/server/libs/logger.js';
 
 export const proxyToCopilot = async (req, res) => {
   try {
