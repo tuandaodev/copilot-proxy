@@ -13,16 +13,16 @@
   },
   "files": ["dist", "server", "READEME.md", "package.json"],
   "scripts": {
-    "start": "node server.js",
-    "start:dev": "nodemon server.js",
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview",
+    "dev": "vinxi dev",
+    "build": "vinxi build",
+    "start": "vinxi start",
     "format": "biome format --write .",
     "lint": "biome lint .",
     "check": "biome check --apply ."
   },
   "dependencies": {
+    "@solidjs/router": "0.15.3",
+    "@solidjs/start": "1.1.4",
     "@tinyhttp/app": "^2.2.1",
     "@tinyhttp/logger": "^2.1.0",
     "daisyui": "^5.0.30",
@@ -36,6 +36,7 @@
     "sirv": "^3.0.1",
     "solid-js": "^1.9.5",
     "uuid": "^11.1.0",
+    "vinxi": "0.5.6",
     "zod": "^3.24.3"
   },
   "devDependencies": {

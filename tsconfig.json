@@ -8,7 +8,7 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "types": [
-      "vite/client"
+      "vinxi/types/client"
     ],
     "noEmit": true,
     "checkJs": true,

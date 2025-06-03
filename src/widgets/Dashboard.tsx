@@ -3,7 +3,7 @@ import TokenResourcePanel from '@/components/TokenResourcePanel';
 import { generateToken } from '@/models/token/token-resource';
 import type { Component } from 'solid-js';
 
-const App: Component = () => {
+const Dashboard: Component = () => {
   return (
     <>
       <div class="bg-neutral-950 border-b border-zinc-600 p-4 text-2xl">Copilot Proxy</div>
@@ -26,4 +26,4 @@ const App: Component = () => {
   );
 };
 
-export default App;
+export default Dashboard;
