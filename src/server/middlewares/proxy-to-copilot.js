@@ -1,42 +1,31 @@
-import { Writable } from 'node:stream';
-
 import { COPILOT_API_HOST, COPILOT_HEADERS } from '@/server/config.js';
 import { log } from '@/server/libs/logger.js';
 
-export const proxyToCopilot = async (req, res) => {
-  try {
-    const parsedUrl = new URL(req.url || '/', `http://${req.headers.host}`);
+// Refactored: utility for API routes, not Express middleware
+export async function proxyToCopilot(event, bearerToken) {
+  const url = new URL(event.request.url);
+  const targetPath = url.pathname.replace(/^\/api/, '');
+  const targetUrl = `https://${COPILOT_API_HOST}${targetPath}${url.search}`;
 
-    const options = {
-      method: req.method,
-      headers: {
-        ...req.headers,
-        ...COPILOT_HEADERS,
-        authorization: `Bearer ${req.bearerToken}`,
-        host: COPILOT_API_HOST,
-      },
-      body: ['GET', 'HEAD'].includes(req.method) ? undefined : req,
-      duplex: 'half',
-    };
+  log.info(`Proxying to: ${targetUrl}`);
 
-    const targetUrl = `https://${COPILOT_API_HOST}${parsedUrl.pathname}${parsedUrl.search}`;
-    log.info(`Proxying to: ${targetUrl}`);
+  // Prepare headers
+  const headers = new Headers(event.request.headers);
+  COPILOT_HEADERS && Object.entries(COPILOT_HEADERS).forEach(([k, v]) => headers.set(k, v));
+  headers.set('authorization', `Bearer ${bearerToken}`);
+  headers.set('host', COPILOT_API_HOST);
 
-    const response = await fetch(targetUrl, options);
+  // Proxy the request
+  const proxyResponse = await fetch(targetUrl, {
+    method: event.request.method,
+    headers,
+    body: ['GET', 'HEAD'].includes(event.request.method) ? undefined : event.request.body,
+    duplex: 'half',
+  });
 
-    res.status(response.status);
-    response.headers.forEach((value, key) => {
-      res.setHeader(key, value);
-    });
-
-    if (response.body) {
-      response.body.pipeTo(Writable.toWeb(res));
-    } else {
-      const data = await response.text();
-      res.send(data);
-    }
-  } catch (error) {
-    log.error(`Proxy error: ${error.message}`);
-    res.status(500).send(`Proxy error: ${error.message}`);
-  }
-};
+  // Return proxied response
+  return new Response(proxyResponse.body, {
+    status: proxyResponse.status,
+    headers: proxyResponse.headers,
+  });
+}

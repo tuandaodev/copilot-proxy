@@ -5,24 +5,24 @@ import { getSelectedToken } from '@/server/libs/token-store/token-storage.js';
 
 const EMPTY_TOKEN = '_';
 
-export async function ensureInternalToken(req, res, next) {
-  const authHeader = req.headers.authorization;
-  // Extract token from Authorization header. If the header is "Bearer _", it will be replaced with the default token.
+// Refactored: utility for API routes, not Express middleware
+export async function ensureInternalToken(event) {
+  const authHeader = event.request.headers.get('authorization');
   const providedToken = authHeader?.replace(/^(token|Bearer) ?/, '') || EMPTY_TOKEN;
+  const selectedToken = await getSelectedToken();
   const oauthToken =
-    providedToken === EMPTY_TOKEN ? (await getSelectedToken()).token : providedToken;
+    providedToken === EMPTY_TOKEN ? selectedToken?.token : providedToken;
 
   if (!oauthToken) {
-    res.status(401).send('Do login or provide a GitHub token in the Authorization header');
-    return;
+    return { error: new Response('Do login or provide a GitHub token in the Authorization header', { status: 401 }) };
   }
   log.info({ 'Use token': maskToken(oauthToken) });
 
   try {
-    req.bearerToken = await getBearerToken(oauthToken);
-    next();
+    const bearerToken = await getBearerToken(oauthToken);
+    return { bearerToken };
   } catch (error) {
     log.error(`Error fetching Bearer token from ${oauthToken}: ${error.message}`);
-    res.status(500).send(`Internal server error: ${error.message}`);
+    return { error: new Response(`Internal server error: ${error.message}`, { status: 500 }) };
   }
 }
