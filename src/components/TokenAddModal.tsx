@@ -1,4 +1,5 @@
 import { addToken } from '@/models/token/token-item';
+import { useAction } from '@solidjs/router';
 import type { Component } from 'solid-js';
 import { createEffect, createSignal } from 'solid-js';
 import type { Accessor } from 'solid-js/types/server/reactive.js';
@@ -12,6 +13,8 @@ const TokenAddModal: Component<{ isOpen: Accessor<boolean>; onClose: () => void 
   const [nameInput, setNameInput] = createSignal('');
   const [tokenInput, setTokenInput] = createSignal('');
 
+  const addTokenAction = useAction(addToken);
+
   createEffect(() => {
     if (isOpen()) {
       modalRef.showModal();
@@ -19,7 +22,7 @@ const TokenAddModal: Component<{ isOpen: Accessor<boolean>; onClose: () => void 
     }
   });
   const onClickSave = () => {
-    addToken(nameInput(), tokenInput());
+    addTokenAction(nameInput(), tokenInput());
     onClickClose();
   };
   const onClickClose = () => {

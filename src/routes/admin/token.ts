@@ -1,15 +1,12 @@
-import { json } from "@solidjs/router";
-import type { APIEvent } from "@solidjs/start/server";
-import { startLogin, startPolling } from "@/server/token-resource.js";
-import * as tokenStorage from "@/server/libs/token-store/token-storage.js";
+import * as tokenStorage from '@/server/libs/token-store/token-storage.js';
+import { startLogin, startPolling } from '@/server/token-resource.js';
+import type { APIEvent } from '@solidjs/start/server';
 
 export const POST = async (event: APIEvent) => {
   const stream = new ReadableStream({
     async start(controller) {
       const jsonWriter = (obj) => {
-        controller.enqueue(
-          new TextEncoder().encode(JSON.stringify(obj) + "\n")
-        );
+        controller.enqueue(new TextEncoder().encode(JSON.stringify(obj) + '\n'));
         return obj;
       };
       await startLogin().then(jsonWriter);
@@ -24,6 +21,6 @@ export const POST = async (event: APIEvent) => {
     },
   });
   return new Response(stream, {
-    headers: { "Content-Type": "text/plain" },
+    headers: { 'Content-Type': 'text/plain' },
   });
 };

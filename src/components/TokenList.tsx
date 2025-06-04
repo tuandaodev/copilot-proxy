@@ -1,5 +1,6 @@
-import { removeToken, setDefaultToken, tokenList } from '@/models/token/token-item';
+import { getTokenList, removeToken, setDefaultToken } from '@/models/token/token-item';
 import type { TokenItem } from '@/models/token/types';
+import { createAsync, useAction } from '@solidjs/router';
 import Bookmark from 'lucide-solid/icons/bookmark';
 import BookmarkCheck from 'lucide-solid/icons/bookmark-check';
 import Pencil from 'lucide-solid/icons/pencil';
@@ -9,12 +10,6 @@ import { ErrorBoundary, For, createSignal } from 'solid-js';
 import QuotaInfo from './QuotaInfo';
 import TokenAddModal from './TokenAddModal';
 import TokenEditModal from './TokenEditModal';
-
-const onClickDelete = (item: TokenItem) => {
-  if (window.confirm(`Are you sure to delete the token ${item.name}?`)) {
-    removeToken(item.id);
-  }
-};
 
 const onClickDefault = (item: TokenItem) => {
   setDefaultToken(item.id);
@@ -40,11 +35,19 @@ const MenuItem: Component<MenuItemProps> = (props: MenuItemProps) => {
 };
 
 const TokenList: Component = () => {
+  const tokenList = createAsync(getTokenList);
   const [editingItem, setEditingItem] = createSignal(null);
   const [isAdding, setIsAdding] = createSignal(false);
+  const removeTokenAction = useAction(removeToken);
 
   const showModal = (item: TokenItem) => {
     setEditingItem(item);
+  };
+
+  const onClickDelete = (item: TokenItem) => {
+    if (window.confirm(`Are you sure to delete the token ${item.name}?`)) {
+      removeTokenAction(item.id);
+    }
   };
 
   return (

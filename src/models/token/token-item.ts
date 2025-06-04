@@ -1,11 +1,32 @@
+import { maskToken } from '@/server/libs/mask-token.js';
+import * as tokenStorage from '@/server/libs/token-store/token-storage.js';
+import { action, query, revalidate } from '@solidjs/router';
 import { createResource } from 'solid-js';
 import type { TokenItem } from './types';
 
+function transformTokenItem(tokenItem, defaultToken?): TokenItem {
+  return {
+    ...tokenItem,
+    token: maskToken(tokenItem.token),
+    default: defaultToken && defaultToken.id === tokenItem.id,
+  };
+}
+
+export const getTokenList = query(async () => {
+  'use server';
+  const tokens = await tokenStorage.getTokens();
+  const defaultToken = await tokenStorage.getSelectedToken();
+  const results = tokens
+    .map((item) => transformTokenItem(item, defaultToken))
+    .sort((a, b) => b.createdAt - a.createdAt);
+
+  return results;
+}, 'tokens');
+
+export const refetchTokenList = () => revalidate(getTokenList.key);
+
 async function fetchTokens() {
-  const res = await fetch('/admin/tokens', {
-    method: 'GET',
-  });
-  return res.json();
+  return {};
 }
 
 async function removeTokenItem(id: string) {
@@ -60,10 +81,10 @@ export const setDefaultToken = async (id: string) => {
   }
 };
 
-export const removeToken = async (id: string) => {
-  const succeed = await removeTokenItem(id);
-  succeed && mutate((tokens) => tokens.filter((token) => token.id !== id));
-};
+export const removeToken = action(async (id: string) => {
+  'use server';
+  await tokenStorage.removeToken(id);
+}, 'removeToken');
 
 export const renameToken = async (id: string, name: string) => {
   const succeed = await patchTokenName(id, name);
@@ -87,9 +108,18 @@ export const refreshTokenMeta = async (id: string) => {
   );
 };
 
-export const addToken = async (name: string, token: string) => {
-  const addedToken = await postToken(name, token);
-  mutate((tokens) => [addedToken, ...tokens]);
-};
+export const addToken = action(async (name: string, token: string): Promise<TokenItem | null> => {
+  'use server';
 
-export { tokenList, refetch as refetchTokenList };
+  if (!name || !token) {
+    return null;
+  }
+  try {
+    const item = await tokenStorage.storeToken({ name, token });
+    return transformTokenItem(item);
+  } catch (e) {
+    return null;
+  }
+}, 'addToken');
+
+export { tokenList };
