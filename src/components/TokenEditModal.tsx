@@ -1,5 +1,6 @@
 import { renameToken } from '@/models/token/token-item';
 import type { TokenItem } from '@/models/token/types';
+import { useAction } from '@solidjs/router';
 import type { Component } from 'solid-js';
 import { createEffect, createSignal } from 'solid-js';
 import type { Accessor } from 'solid-js/types/server/reactive.js';
@@ -11,6 +12,7 @@ const TokenEditModal: Component<{ editingItem: Accessor<TokenItem>; onClose: () 
   let editModal: HTMLDialogElement | undefined;
   let inputRef: HTMLInputElement;
   const [nameInput, setNameInput] = createSignal('');
+  const renameTokenAction = useAction(renameToken);
 
   createEffect(() => {
     if (editingItem()) {
@@ -20,7 +22,7 @@ const TokenEditModal: Component<{ editingItem: Accessor<TokenItem>; onClose: () 
     }
   });
   const onClickSave = () => {
-    renameToken(editingItem().id, nameInput());
+    renameTokenAction(editingItem().id, nameInput());
     onClickClose();
   };
   const onClickClose = () => {

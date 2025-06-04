@@ -77,17 +77,10 @@ export const removeToken = action(async (id: string) => {
   await tokenStorage.removeToken(id);
 }, 'removeToken');
 
-export const renameToken = async (id: string, name: string) => {
-  const succeed = await patchTokenName(id, name);
-  if (succeed) {
-    mutate((tokens) =>
-      tokens.map((token) => ({
-        ...token,
-        name: token.id === id ? name : token.name,
-      })),
-    );
-  }
-};
+export const renameToken = action(async (id: string, name: string) => {
+  'use server';
+  await tokenStorage.updateName(id, name);
+}, 'renameToken');
 
 export const refreshTokenMeta = action(async (id: string) => {
   'use server';
