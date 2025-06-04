@@ -25,41 +25,6 @@ export const getTokenList = query(async () => {
 
 export const refetchTokenList = () => revalidate(getTokenList.key);
 
-async function fetchTokens() {
-  return {};
-}
-
-async function removeTokenItem(id: string) {
-  await fetch(`/admin/tokens/${id}`, {
-    method: 'DELETE',
-  });
-  return true;
-}
-
-async function putTokenDefault(id: string) {
-  await fetch('/admin/tokens/default', {
-    method: 'PUT',
-    body: JSON.stringify({ id }),
-  });
-  return true;
-}
-
-async function patchTokenName(id: string, name: string) {
-  await fetch(`/admin/tokens/${id}`, {
-    method: 'PATCH',
-    body: JSON.stringify({ name }),
-  });
-  return true;
-}
-
-async function postToken(name: string, token: string) {
-  const res = await fetch('/admin/tokens', {
-    method: 'POST',
-    body: JSON.stringify({ name, token }),
-  });
-  return res.json();
-}
-
 export const setDefaultToken = action(async (id: string) => {
   'use server';
   await tokenStorage.selectToken(id);
