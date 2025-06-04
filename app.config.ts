@@ -10,4 +10,13 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    esbuild: {
+      options: {
+        supported: {
+          'top-level-await': true,
+        },
+      },
+    },
+  },
 });
