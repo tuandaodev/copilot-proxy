@@ -1,7 +1,7 @@
 import { maskToken } from '@/server/libs/mask-token.js';
+import { refreshMeta } from '@/server/libs/token-store/copilot-token-meta.js';
 import * as tokenStorage from '@/server/libs/token-store/token-storage.js';
 import { action, query, revalidate } from '@solidjs/router';
-import { createResource } from 'solid-js';
 import type { TokenItem } from './types';
 
 function transformTokenItem(tokenItem, defaultToken?): TokenItem {
@@ -44,13 +44,6 @@ async function putTokenDefault(id: string) {
   return true;
 }
 
-async function putTokenMeta(id: string) {
-  const res = await fetch(`/admin/tokens/${id}/meta`, {
-    method: 'PUT',
-  });
-  return res.json();
-}
-
 async function patchTokenName(id: string, name: string) {
   await fetch(`/admin/tokens/${id}`, {
     method: 'PATCH',
@@ -66,8 +59,6 @@ async function postToken(name: string, token: string) {
   });
   return res.json();
 }
-
-const [tokenList, { refetch, mutate }] = createResource<TokenItem[]>(fetchTokens);
 
 export const setDefaultToken = async (id: string) => {
   const succeed = await putTokenDefault(id);
@@ -98,15 +89,13 @@ export const renameToken = async (id: string, name: string) => {
   }
 };
 
-export const refreshTokenMeta = async (id: string) => {
-  const meta = await putTokenMeta(id);
-  mutate((tokens) =>
-    tokens.map((token) => ({
-      ...token,
-      meta: token.id === id ? meta : token.meta,
-    })),
-  );
-};
+export const refreshTokenMeta = action(async (id: string) => {
+  'use server';
+  const { token } = await tokenStorage.getToken(id);
+  const meta = await refreshMeta(token);
+  await tokenStorage.updateMetaByToken(token, meta);
+  return meta;
+}, 'refreshTokenMeta');
 
 export const addToken = action(async (name: string, token: string): Promise<TokenItem | null> => {
   'use server';
@@ -121,5 +110,3 @@ export const addToken = action(async (name: string, token: string): Promise<Toke
     return null;
   }
 }, 'addToken');
-
-export { tokenList };

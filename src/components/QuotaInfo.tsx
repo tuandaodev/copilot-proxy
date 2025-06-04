@@ -1,10 +1,10 @@
-import { refreshTokenMeta } from '@/models/token/token-item';
 import type { TokenItem } from '@/models/token/types';
 import Refresh from 'lucide-solid/icons/rotate-ccw';
 import type { Component } from 'solid-js';
 
 type QuotaInfoProps = {
   item: TokenItem;
+  onClickRefresh?: () => void;
 };
 
 const DEFAULT_CHAT_QUOTA = 500;
@@ -27,7 +27,7 @@ function formatResetTime(time: number) {
   });
 }
 
-const QuotaInfo: Component<QuotaInfoProps> = (props: { item: TokenItem }) => {
+const QuotaInfo: Component<QuotaInfoProps> = (props) => {
   const {
     chatQuota = DEFAULT_CHAT_QUOTA,
     completionsQuota = DEFAULT_COMPLETIONS_QUOTA,
@@ -41,7 +41,7 @@ const QuotaInfo: Component<QuotaInfoProps> = (props: { item: TokenItem }) => {
         <span class="flex-1">Copilot Free Plan Usage</span>
         <Refresh
           class="cursor-pointer hover:text-zinc-300"
-          onClick={() => refreshTokenMeta(props.item.id)}
+          onClick={() => props.onClickRefresh?.()}
           size={12}
         />
       </div>

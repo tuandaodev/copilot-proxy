@@ -1,4 +1,9 @@
-import { getTokenList, removeToken, setDefaultToken } from '@/models/token/token-item';
+import {
+  getTokenList,
+  refreshTokenMeta,
+  removeToken,
+  setDefaultToken,
+} from '@/models/token/token-item';
 import type { TokenItem } from '@/models/token/types';
 import { createAsync, useAction } from '@solidjs/router';
 import Bookmark from 'lucide-solid/icons/bookmark';
@@ -38,7 +43,9 @@ const TokenList: Component = () => {
   const tokenList = createAsync(getTokenList);
   const [editingItem, setEditingItem] = createSignal(null);
   const [isAdding, setIsAdding] = createSignal(false);
+
   const removeTokenAction = useAction(removeToken);
+  const refreshTokenMetaAction = useAction(refreshTokenMeta);
 
   const showModal = (item: TokenItem) => {
     setEditingItem(item);
@@ -48,6 +55,10 @@ const TokenList: Component = () => {
     if (window.confirm(`Are you sure to delete the token ${item.name}?`)) {
       removeTokenAction(item.id);
     }
+  };
+
+  const onClickRefresh = (item: TokenItem) => {
+    refreshTokenMetaAction(item.id);
   };
 
   return (
@@ -91,7 +102,7 @@ const TokenList: Component = () => {
                     Created at: {new Date(item.createdAt).toLocaleString()}
                   </div>
                 </div>
-                <QuotaInfo item={item} />
+                <QuotaInfo item={item} onClickRefresh={() => onClickRefresh(item)} />
               </li>
             </>
           )}
