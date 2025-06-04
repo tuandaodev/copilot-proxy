@@ -16,10 +16,6 @@ import QuotaInfo from './QuotaInfo';
 import TokenAddModal from './TokenAddModal';
 import TokenEditModal from './TokenEditModal';
 
-const onClickDefault = (item: TokenItem) => {
-  setDefaultToken(item.id);
-};
-
 type MenuItemProps = {
   children?: any;
   tooltip: string;
@@ -46,6 +42,7 @@ const TokenList: Component = () => {
 
   const removeTokenAction = useAction(removeToken);
   const refreshTokenMetaAction = useAction(refreshTokenMeta);
+  const setDefaultTokenAction = useAction(setDefaultToken);
 
   const showModal = (item: TokenItem) => {
     setEditingItem(item);
@@ -55,6 +52,10 @@ const TokenList: Component = () => {
     if (window.confirm(`Are you sure to delete the token ${item.name}?`)) {
       removeTokenAction(item.id);
     }
+  };
+
+  const onClickDefault = (item: TokenItem) => {
+    setDefaultTokenAction(item.id);
   };
 
   const onClickRefresh = (item: TokenItem) => {

@@ -60,17 +60,10 @@ async function postToken(name: string, token: string) {
   return res.json();
 }
 
-export const setDefaultToken = async (id: string) => {
-  const succeed = await putTokenDefault(id);
-  if (succeed) {
-    mutate((tokens) =>
-      tokens.map((token) => ({
-        ...token,
-        default: token.id === id,
-      })),
-    );
-  }
-};
+export const setDefaultToken = action(async (id: string) => {
+  'use server';
+  await tokenStorage.selectToken(id);
+}, 'setDefaultToken');
 
 export const removeToken = action(async (id: string) => {
   'use server';
