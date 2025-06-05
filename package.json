@@ -16,9 +16,9 @@
     "dev": "vinxi dev",
     "build": "vinxi build",
     "start": "vinxi start",
-    "format": "biome format --write .",
-    "lint": "biome lint .",
-    "check": "biome check --apply ."
+    "format": "biome format --write src",
+    "lint": "biome lint src",
+    "check": "biome check --apply src"
   },
   "dependencies": {
     "@solidjs/router": "0.15.3",
