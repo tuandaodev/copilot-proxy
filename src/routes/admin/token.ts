@@ -1,5 +1,5 @@
-import * as tokenStorage from '@/server/libs/token-store/token-storage.js';
-import { startLogin, startPolling } from '@/server/token-resource.js';
+import * as tokenStorage from '@/server/libs/token-store/token-storage';
+import { startLogin, startPolling } from '@/server/token-resource';
 import type { APIEvent } from '@solidjs/start/server';
 
 export const POST = async (event: APIEvent) => {

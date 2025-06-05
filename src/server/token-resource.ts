@@ -1,4 +1,4 @@
-import { log } from '@/server/libs/logger.js';
+import { log } from '@/server/libs/logger';
 
 const CLIENT_ID = 'Iv1.b507a08c87ecfe98';
 const MANDATORY_HEADERS = Object.freeze({
