@@ -10,11 +10,14 @@ export async function ensureInternalToken(event) {
   const authHeader = event.request.headers.get('authorization');
   const providedToken = authHeader?.replace(/^(token|Bearer) ?/, '') || EMPTY_TOKEN;
   const selectedToken = await getSelectedToken();
-  const oauthToken =
-    providedToken === EMPTY_TOKEN ? selectedToken?.token : providedToken;
+  const oauthToken = providedToken === EMPTY_TOKEN ? selectedToken?.token : providedToken;
 
   if (!oauthToken) {
-    return { error: new Response('Do login or provide a GitHub token in the Authorization header', { status: 401 }) };
+    return {
+      error: new Response('Do login or provide a GitHub token in the Authorization header', {
+        status: 401,
+      }),
+    };
   }
   log.info({ 'Use token': maskToken(oauthToken) });
 
