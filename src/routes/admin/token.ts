@@ -2,24 +2,39 @@ import * as tokenStorage from '@/server/libs/token-store/token-storage';
 import { startLogin, startPolling } from '@/server/token-resource';
 import type { APIEvent } from '@solidjs/start/server';
 
-export const POST = async (event: APIEvent) => {
+type PromiseFactory = (prevResult?: Record<string, unknown>) => Promise<Record<string, unknown>>;
+
+function createReadableStream(callbacks: Array<PromiseFactory>) {
   const stream = new ReadableStream({
     async start(controller) {
-      const jsonWriter = (obj) => {
-        controller.enqueue(new TextEncoder().encode(JSON.stringify(obj) + '\n'));
-        return obj;
-      };
-      await startLogin().then(jsonWriter);
-      const { accessToken } = await startPolling().then(jsonWriter);
+      let prevResult: Record<string, unknown>;
+      for (const fn of callbacks) {
+        const result = await fn(prevResult);
+        controller.enqueue(new TextEncoder().encode(`${JSON.stringify(result)}\n`));
+        prevResult = result;
+      }
+
+      controller.close();
+    },
+  });
+  return stream;
+}
+
+export const POST = async (event: APIEvent) => {
+  const stream = createReadableStream([
+    startLogin,
+    startPolling,
+    async (result: { accessToken?: string }) => {
+      const { accessToken } = result;
       if (accessToken) {
         await tokenStorage.storeToken({
           name: `Token-${Date.now()}`,
           token: accessToken,
         });
       }
-      controller.close();
+      return result;
     },
-  });
+  ]);
   return new Response(stream, {
     headers: { 'Content-Type': 'text/plain' },
   });
