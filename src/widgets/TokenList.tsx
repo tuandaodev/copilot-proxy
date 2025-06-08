@@ -13,8 +13,8 @@ import Trash from 'lucide-solid/icons/trash-2';
 import type { Component } from 'solid-js';
 import { ErrorBoundary, For, createSignal } from 'solid-js';
 import QuotaInfo from '@/shared/ui/QuotaInfo';
-import TokenAddModal from '@/shared/ui/TokenAddModal';
-import TokenEditModal from '@/shared/ui/TokenEditModal';
+import TokenAddModal from '@/entities/token/ui/TokenAddModal';
+import TokenEditModal from '@/entities/token/ui/TokenEditModal';
 
 type MenuItemProps = {
   children?: any;
