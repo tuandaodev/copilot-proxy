@@ -1,6 +1,6 @@
 import IconCopy from '@/components/IconCopy';
 import { refetchTokenList } from '@/entities/token/model/token-item';
-import { tokenResource } from '@/entities/token/model/token-resource';
+import { tokenResource } from '@/entities/token/model/token-auth';
 import type { Component } from 'solid-js';
 import { Match, Suspense, Switch, createEffect } from 'solid-js';
 
