@@ -1,5 +1,5 @@
-import { COPILOT_TOKEN_API_URL } from '@/server/config';
-import { updateMetaByToken } from '@/server/libs/token-store/token-storage';
+import { COPILOT_TOKEN_API_URL } from '@/shared/config/config';
+import { updateMetaByToken } from '@/entities/token/api/token-storage';
 
 // Token cache storing {token, expiresAt} keyed by oauthToken
 const cacheMap = new Map();

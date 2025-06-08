@@ -1,6 +1,6 @@
-import { maskToken } from '@/server/libs/mask-token';
-import { refreshMeta } from '@/server/libs/token-store/copilot-token-meta';
-import * as tokenStorage from '@/server/libs/token-store/token-storage';
+import { maskToken } from '@/shared/lib/mask-token';
+import { refreshMeta } from '@/entities/token/api/copilot-token-meta';
+import * as tokenStorage from '@/entities/token/api/token-storage';
 import { action, query, revalidate } from '@solidjs/router';
 import type { TokenItem } from './types';
 

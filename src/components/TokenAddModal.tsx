@@ -1,4 +1,4 @@
-import { addToken } from '@/models/token/token-item';
+import { addToken } from '@/entities/token/model/token-item';
 import { useAction } from '@solidjs/router';
 import type { Component } from 'solid-js';
 import { createEffect, createSignal } from 'solid-js';

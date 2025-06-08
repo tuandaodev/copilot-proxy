@@ -3,8 +3,8 @@ import {
   refreshTokenMeta,
   removeToken,
   setDefaultToken,
-} from '@/models/token/token-item';
-import type { TokenItem } from '@/models/token/types';
+} from '@/entities/token/model/token-item';
+import type { TokenItem } from '@/entities/token/model/types';
 import { createAsync, useAction } from '@solidjs/router';
 import Bookmark from 'lucide-solid/icons/bookmark';
 import BookmarkCheck from 'lucide-solid/icons/bookmark-check';

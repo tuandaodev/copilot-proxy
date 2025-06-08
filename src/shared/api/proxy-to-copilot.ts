@@ -1,5 +1,5 @@
-import { COPILOT_API_HOST, COPILOT_HEADERS } from '@/server/config';
-import { log } from '@/server/libs/logger';
+import { COPILOT_API_HOST, COPILOT_HEADERS } from '@/shared/config/config';
+import { log } from '@/shared/lib/logger';
 
 // Refactored: utility for API routes, not Express middleware
 export async function proxyToCopilot(event, bearerToken) {

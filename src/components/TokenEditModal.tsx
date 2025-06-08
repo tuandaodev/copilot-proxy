@@ -1,5 +1,5 @@
-import { renameToken } from '@/models/token/token-item';
-import type { TokenItem } from '@/models/token/types';
+import { renameToken } from '@/entities/token/model/token-item';
+import type { TokenItem } from '@/entities/token/model/types';
 import { useAction } from '@solidjs/router';
 import type { Component } from 'solid-js';
 import { createEffect, createSignal } from 'solid-js';

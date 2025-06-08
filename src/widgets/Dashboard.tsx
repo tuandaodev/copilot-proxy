@@ -1,6 +1,6 @@
 import TokenList from '@/components/TokenList';
 import TokenResourcePanel from '@/components/TokenResourcePanel';
-import { generateToken } from '@/models/token/token-resource';
+import { generateToken } from '@/entities/token/model/token-resource';
 import type { Component } from 'solid-js';
 
 const Dashboard: Component = () => {

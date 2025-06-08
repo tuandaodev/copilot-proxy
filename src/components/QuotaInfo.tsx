@@ -1,4 +1,4 @@
-import type { TokenItem } from '@/models/token/types';
+import type { TokenItem } from '@/entities/token/model/types';
 import Refresh from 'lucide-solid/icons/rotate-ccw';
 import type { Component } from 'solid-js';
 

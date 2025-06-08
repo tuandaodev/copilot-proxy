@@ -1,5 +1,5 @@
-import { ensureInternalToken } from '@/server/middlewares/ensure-internal-token';
-import { proxyToCopilot } from '@/server/middlewares/proxy-to-copilot';
+import { ensureInternalToken } from '@/shared/api/ensure-internal-token';
+import { proxyToCopilot } from '@/shared/api/proxy-to-copilot';
 import type { APIEvent } from '@solidjs/start/server';
 
 // Catch-all API route for proxying to Copilot

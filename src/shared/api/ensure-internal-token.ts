@@ -1,7 +1,7 @@
-import { log } from '@/server/libs/logger';
-import { maskToken } from '@/server/libs/mask-token';
-import { getBearerToken } from '@/server/libs/token-store/copilot-token-meta';
-import { getSelectedToken } from '@/server/libs/token-store/token-storage';
+import { log } from '@/shared/lib/logger';
+import { maskToken } from '@/shared/lib/mask-token';
+import { getBearerToken } from '@/entities/token/api/copilot-token-meta';
+import { getSelectedToken } from '@/entities/token/api/token-storage';
 
 const EMPTY_TOKEN = '_';
 
