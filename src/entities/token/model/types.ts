@@ -1,4 +1,4 @@
-export interface TokenResource {
+export interface TokenAuth {
   message: string;
   accessToken?: string;
   deviceCode?: string;

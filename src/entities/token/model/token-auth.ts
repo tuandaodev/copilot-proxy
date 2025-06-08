@@ -1,10 +1,10 @@
 import { createSignal } from 'solid-js';
-import type { TokenResource } from './types';
+import type { TokenAuth } from './types';
 
-const [tokenResource, setTokenResource] = createSignal<TokenResource>(null);
-export { tokenResource };
+const [tokenAuth, setTokenAuth] = createSignal<TokenAuth>(null);
+export { tokenAuth };
 export async function generateToken() {
-  setTokenResource({ message: 'Generating token...' });
+  setTokenAuth({ message: 'Generating token...' });
   const res = await fetch('/admin/token', {
     method: 'POST',
   });
@@ -14,6 +14,6 @@ export async function generateToken() {
     const { value, done } = await reader.read();
     if (done) break;
     const json = JSON.parse(value);
-    setTokenResource(json);
+    setTokenAuth(json);
   }
 }
