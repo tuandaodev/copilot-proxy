@@ -33,7 +33,7 @@ const AccessTokenInfo: Component = () => {
   );
 };
 
-const TokenResourcePanel: Component = () => {
+const TokenAuthPanel: Component = () => {
   createEffect(() => {
     if (tokenAuth()?.accessToken) {
       refetchTokenList();
@@ -54,4 +54,4 @@ const TokenResourcePanel: Component = () => {
   );
 };
 
-export default TokenResourcePanel;
+export default TokenAuthPanel;
