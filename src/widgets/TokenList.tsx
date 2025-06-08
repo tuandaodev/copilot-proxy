@@ -12,9 +12,9 @@ import Pencil from 'lucide-solid/icons/pencil';
 import Trash from 'lucide-solid/icons/trash-2';
 import type { Component } from 'solid-js';
 import { ErrorBoundary, For, createSignal } from 'solid-js';
-import QuotaInfo from './QuotaInfo';
-import TokenAddModal from './TokenAddModal';
-import TokenEditModal from './TokenEditModal';
+import QuotaInfo from '@/shared/ui/QuotaInfo';
+import TokenAddModal from '@/shared/ui/TokenAddModal';
+import TokenEditModal from '@/shared/ui/TokenEditModal';
 
 type MenuItemProps = {
   children?: any;

@@ -1,5 +1,5 @@
-import TokenList from '@/components/TokenList';
-import TokenAuthPanel from '@/components/TokenAuthPanel';
+import TokenList from '@/widgets/TokenList';
+import TokenAuthPanel from '@/widgets/TokenAuthPanel';
 import { generateToken } from '@/entities/token/model/token-auth';
 import type { Component } from 'solid-js';
 
