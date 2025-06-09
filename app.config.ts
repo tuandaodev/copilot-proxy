@@ -15,6 +15,7 @@ export default defineConfig({
       },
     },
   },
+  middleware: "src/middleware/index.ts",
   server: {
     esbuild: {
       options: {
