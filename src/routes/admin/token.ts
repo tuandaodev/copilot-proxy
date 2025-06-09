@@ -1,5 +1,5 @@
-import * as tokenStorage from '@/entities/token/api/token-storage';
 import { startLogin, startPolling } from '@/entities/token/api/token-auth';
+import * as tokenStorage from '@/entities/token/api/token-storage';
 import type { APIEvent } from '@solidjs/start/server';
 
 type PromiseFactory = (prevResult?: Record<string, unknown>) => Promise<Record<string, unknown>>;

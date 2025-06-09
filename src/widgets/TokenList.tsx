@@ -5,6 +5,9 @@ import {
   setDefaultToken,
 } from '@/entities/token/model/token-item';
 import type { TokenItem } from '@/entities/token/model/types';
+import QuotaInfo from '@/entities/token/ui/QuotaInfo';
+import TokenAddModal from '@/entities/token/ui/TokenAddModal';
+import TokenEditModal from '@/entities/token/ui/TokenEditModal';
 import { createAsync, useAction } from '@solidjs/router';
 import Bookmark from 'lucide-solid/icons/bookmark';
 import BookmarkCheck from 'lucide-solid/icons/bookmark-check';
@@ -12,9 +15,6 @@ import Pencil from 'lucide-solid/icons/pencil';
 import Trash from 'lucide-solid/icons/trash-2';
 import type { Component } from 'solid-js';
 import { ErrorBoundary, For, createSignal } from 'solid-js';
-import QuotaInfo from '@/entities/token/ui/QuotaInfo';
-import TokenAddModal from '@/entities/token/ui/TokenAddModal';
-import TokenEditModal from '@/entities/token/ui/TokenEditModal';
 
 type MenuItemProps = {
   children?: any;

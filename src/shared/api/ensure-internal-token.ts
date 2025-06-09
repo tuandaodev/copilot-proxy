@@ -1,7 +1,7 @@
-import { log } from '@/shared/lib/logger';
-import { maskToken } from '@/shared/lib/mask-token';
 import { getBearerToken } from '@/entities/token/api/copilot-token-meta';
 import { getSelectedToken } from '@/entities/token/api/token-storage';
+import { log } from '@/shared/lib/logger';
+import { maskToken } from '@/shared/lib/mask-token';
 
 const EMPTY_TOKEN = '_';
 
