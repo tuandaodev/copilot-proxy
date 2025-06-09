@@ -45,9 +45,13 @@ A simple HTTP proxy that exposes your GitHub Copilot free quota as an OpenAI-com
 - (Optional) Use environment variable `PORT` for setting different port other than `3000`.
 
 ## Advanced usage
-- For some LLM clients, it is mandatory to provide an non-empty API key. In that case you can use a special dummy token `_` to make copilot-proxy use the default token.
-- The token is stored locally under `some/path/to/node_modules/copilot-proxy/.storage`. Be sure to backup this directory if you want to keep your tokens.
-    - Note: even you delete the `.storage` folder, the token is still functionable from GitHub Copilot.(That is how Github Copilot works at the moment.)
+- For some LLM clients, it is mandatory to provide a non-empty API key. In that case you can use a special dummy token `_` to make copilot-proxy use the default token.
+- The token is stored locally under a storage directory (default: `.storage`). You can change this location by setting the `STORAGE_DIR` environment variable before starting the server. For example:
+    ```bash
+    STORAGE_DIR=/path/to/your/storage npx copilot-proxy
+    ```
+    Be sure to backup this directory if you want to keep your tokens.
+    - Note: even if you delete the storage folder, the token is still functional from GitHub Copilot. (That is how Github Copilot works at the moment.)
 
 ## Use cases
 - Use with [LLM](https://llm.datasette.io/en/stable/other-models.html#openai-compatible-models) CLI locally.

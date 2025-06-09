@@ -1,13 +1,15 @@
 import storage from 'node-persist';
 import { v4 as uuid } from 'uuid';
 
+const STORAGE_DIR = process.env.STORAGE_DIR || '.storage';
+
 const tokenStorage = storage.create({
-  dir: '.storage/tokens',
+  dir: `${STORAGE_DIR}/tokens`,
   ttl: false, // tokens never expire by default
 });
 
 const selectedTokenStorage = storage.create({
-  dir: '.storage/selected-token',
+  dir: `${STORAGE_DIR}/selected-token`,
   ttl: false, // tokens never expire by default
 });
 
