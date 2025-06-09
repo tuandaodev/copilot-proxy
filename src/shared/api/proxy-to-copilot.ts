@@ -7,19 +7,24 @@ export async function proxyToCopilot(event, bearerToken) {
   const targetPath = url.pathname.replace(/^\/api/, '');
   const targetUrl = `https://${COPILOT_API_HOST}${targetPath}${url.search}`;
 
-  log.info(`Proxying to: ${targetUrl}`);
-
   // Prepare headers
   const headers = new Headers(event.request.headers);
   COPILOT_HEADERS && Object.entries(COPILOT_HEADERS).forEach(([k, v]) => headers.set(k, v));
   headers.set('authorization', `Bearer ${bearerToken}`);
   headers.set('host', COPILOT_API_HOST);
 
+  const body =
+    event.request.method === 'GET' || event.request.method === 'HEAD'
+      ? undefined
+      : event.request.body;
+
+  log.info(`Proxying to: ${event.request.method} ${targetUrl}`);
+
   // Proxy the request
   const proxyResponse = await fetch(targetUrl, {
     method: event.request.method,
     headers,
-    body: ['GET', 'HEAD'].includes(event.request.method) ? undefined : event.request.body,
+    body,
     duplex: 'half',
   });
 
