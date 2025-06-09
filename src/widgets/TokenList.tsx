@@ -12,7 +12,7 @@ import Pencil from 'lucide-solid/icons/pencil';
 import Trash from 'lucide-solid/icons/trash-2';
 import type { Component } from 'solid-js';
 import { ErrorBoundary, For, createSignal } from 'solid-js';
-import QuotaInfo from '@/shared/ui/QuotaInfo';
+import QuotaInfo from '@/entities/token/ui/QuotaInfo';
 import TokenAddModal from '@/entities/token/ui/TokenAddModal';
 import TokenEditModal from '@/entities/token/ui/TokenEditModal';
 
