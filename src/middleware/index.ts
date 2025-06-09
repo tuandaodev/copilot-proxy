@@ -19,7 +19,7 @@ export default createMiddleware({
         status: response.status,
         statusText: response.statusText,
       },
-      'Response info',
+      'onBeforeResponse info',
     );
   },
 });

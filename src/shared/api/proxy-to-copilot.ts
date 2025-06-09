@@ -28,6 +28,8 @@ export async function proxyToCopilot(event, bearerToken) {
     duplex: 'half',
   });
 
+  log.info(`Proxy response: ${proxyResponse.status} ${proxyResponse.statusText}`);
+
   // Return proxied response
   return new Response(proxyResponse.body, {
     status: proxyResponse.status,
