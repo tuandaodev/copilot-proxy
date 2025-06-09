@@ -15,8 +15,13 @@ export default defineConfig({
       },
     },
   },
-  middleware: "src/middleware/index.ts",
+  middleware: 'src/middleware/index.ts',
   server: {
+    output: {
+      dir: 'dist',
+      serverDir: 'dist/server',
+      publicDir: 'dist/public',
+    },
     esbuild: {
       options: {
         supported: {

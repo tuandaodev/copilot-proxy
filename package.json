@@ -1,17 +1,17 @@
 {
   "name": "copilot-proxy",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "HTTP proxy for GitHub Copilot API",
   "author": "Hank Chiu (https://hankchiu.tw)",
   "homepage": "https://github.com/hankchiutw/copilot-proxy",
   "license": "MIT",
   "keywords": ["copilot", "proxy", "openai"],
   "type": "module",
-  "main": "server.js",
+  "main": "dist/server/index.mjs",
   "bin": {
-    "copilot-proxy": "server.js"
+    "copilot-proxy": "dist/server/index.mjs"
   },
-  "files": ["dist", "server", "READEME.md", "package.json"],
+  "files": ["dist", "READEME.md", "package.json"],
   "scripts": {
     "dev": "node --env-file=.env ./node_modules/vinxi/bin/cli.mjs dev",
     "build": "vinxi build",
