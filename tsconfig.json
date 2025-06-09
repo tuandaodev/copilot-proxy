@@ -19,5 +19,10 @@
         "src/*"
       ]
     }
-  }
+  },
+  "include": [
+    "src",
+    "src/globals.d.ts",
+    "app.config.ts"
+  ]
 }

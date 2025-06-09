@@ -1,12 +1,14 @@
-import TokenList from '@/widgets/TokenList';
-import TokenAuthPanel from '@/widgets/TokenAuthPanel';
 import { generateToken } from '@/entities/token/model/token-auth';
+import TokenAuthPanel from '@/widgets/TokenAuthPanel';
+import TokenList from '@/widgets/TokenList';
 import type { Component } from 'solid-js';
 
 const Dashboard: Component = () => {
   return (
     <>
-      <div class="bg-neutral-950 border-b border-zinc-600 p-4 text-2xl">Copilot Proxy</div>
+      <div class="bg-neutral-950 border-b border-zinc-600 p-4 text-2xl">
+        Copilot Proxy<span class="text-xs text-neutral-700 ml-2">v{__APP_VERSION__}</span>
+      </div>
       <div class="w-full bg-base-100">
         <div class="p-8 w-2xl">
           <p class="flex border-b border-zinc-700 pb-4 mb-4">
