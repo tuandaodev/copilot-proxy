@@ -1,5 +1,6 @@
 import { COPILOT_API_HOST, COPILOT_HEADERS } from '@/shared/config/config';
 import { log } from '@/shared/lib/logger';
+import { consumeSSEData, readJson } from '@/shared/lib/stream-helper';
 import type { APIEvent } from '@solidjs/start/server';
 
 // Refactored: utility for API routes, not Express middleware
@@ -14,10 +15,13 @@ export async function proxyToCopilot(event: APIEvent, bearerToken: string) {
   headers.set('authorization', `Bearer ${bearerToken}`);
   headers.set('host', COPILOT_API_HOST);
 
-  const body =
+  const [body, bodyCloned] =
     event.request.method === 'GET' || event.request.method === 'HEAD'
-      ? undefined
-      : event.request.body;
+      ? []
+      : event.request.body.tee();
+
+  const json = await readJson(bodyCloned);
+  console.log('xxx: json', json);
 
   log.info(`Proxying to: ${event.request.method} ${targetUrl}`);
 
@@ -31,6 +35,9 @@ export async function proxyToCopilot(event: APIEvent, bearerToken: string) {
 
   log.info(`Proxy response: ${proxyResponse.status} ${proxyResponse.statusText}`);
 
-  // Return proxied response
+  consumeSSEData(proxyResponse.clone().body, (data) => {
+    console.log('xxx: data', data);
+  });
+
   return proxyResponse;
 }
