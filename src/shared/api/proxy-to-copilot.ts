@@ -1,8 +1,9 @@
 import { COPILOT_API_HOST, COPILOT_HEADERS } from '@/shared/config/config';
 import { log } from '@/shared/lib/logger';
+import type { APIEvent } from '@solidjs/start/server';
 
 // Refactored: utility for API routes, not Express middleware
-export async function proxyToCopilot(event, bearerToken) {
+export async function proxyToCopilot(event: APIEvent, bearerToken: string) {
   const url = new URL(event.request.url);
   const targetPath = url.pathname.replace(/^\/api/, '');
   const targetUrl = `https://${COPILOT_API_HOST}${targetPath}${url.search}`;
@@ -31,8 +32,5 @@ export async function proxyToCopilot(event, bearerToken) {
   log.info(`Proxy response: ${proxyResponse.status} ${proxyResponse.statusText}`);
 
   // Return proxied response
-  return new Response(proxyResponse.body, {
-    status: proxyResponse.status,
-    headers: proxyResponse.headers,
-  });
+  return proxyResponse;
 }
