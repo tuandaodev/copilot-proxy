@@ -1,6 +1,11 @@
 import { log } from '@/shared/lib/logger';
 
 export async function readJson(stream: ReadableStream<Uint8Array>) {
+  const text = await readText(stream);
+  return JSON.parse(text);
+}
+
+export async function readText(stream: ReadableStream<Uint8Array>) {
   const reader = stream.getReader();
   const decoder = new TextDecoder();
 
@@ -10,7 +15,7 @@ export async function readJson(stream: ReadableStream<Uint8Array>) {
     if (done) break;
     text += decoder.decode(value, { stream: true });
   }
-  return JSON.parse(text);
+  return text;
 }
 
 export async function consumeSSEData(
@@ -26,7 +31,7 @@ export async function consumeSSEData(
     if (done) break;
     buffer += decoder.decode(value, { stream: true });
     const events = buffer.split('\n\n');
-    buffer = events.pop(); // incomplete event
+    buffer = events.pop() || ''; // incomplete event
 
     for (const event of events) {
       const dataLine = event.split('\n').find((line) => line.startsWith('data:'));
