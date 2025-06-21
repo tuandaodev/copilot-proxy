@@ -1,16 +1,23 @@
 import { json as responseJson } from '@solidjs/router';
-import OpenAI from 'openai';
 import { Langfuse, observeOpenAI } from 'langfuse';
+import OpenAI from 'openai';
 import type { HandlerConfig } from './types';
+
+import { maskToken } from '@/shared/lib/mask-token';
 
 const langfuse = new Langfuse();
 
 export async function chatCompletionHandler(config: HandlerConfig) {
   const { bearerToken, headers, bodyJson } = config;
   const trace = langfuse.trace({
-    name: 'copilot-proxy',
+    name: 'copilot-proxy-chat-completions',
+    input: bodyJson.messages,
+    metadata: {
+      maskedToken: maskToken(bearerToken),
+      stream: bodyJson.stream,
+      model: bodyJson.model,
+    },
   });
-  const span = trace.span({ name: 'proxy-chat-completions' });
 
   const client = new OpenAI({
     apiKey: bearerToken,
@@ -20,16 +27,16 @@ export async function chatCompletionHandler(config: HandlerConfig) {
     } as any,
   });
   const wrappedClient = observeOpenAI(client, {
-    parent: span,
+    parent: trace,
     generationName: 'proxy-chat-generation',
   });
 
   const completions = await wrappedClient.chat.completions.create(
     bodyJson as OpenAI.ChatCompletionCreateParams,
   );
-  span.end();
 
   if (!bodyJson.stream) {
+    trace.update({ output: completions });
     return responseJson(completions);
   }
 
