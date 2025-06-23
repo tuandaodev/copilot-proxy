@@ -11,7 +11,7 @@
   "bin": {
     "copilot-proxy": "bin/cli.js"
   },
-  "files": ["dist", "READEME.md", "package.json", "bin"],
+  "files": ["dist", "README.md", "package.json", "bin"],
   "scripts": {
     "dev": "node --env-file=.env ./node_modules/vinxi/bin/cli.mjs dev",
     "build": "vinxi build",
