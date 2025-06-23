@@ -10,7 +10,8 @@ type QuotaInfoProps = {
 const DEFAULT_CHAT_QUOTA = 500;
 const DEFAULT_COMPLETIONS_QUOTA = 4000;
 
-function calcUsageRate(quota: number, defaultQuota: number) {
+function calcUsageRate(quota: number | null, defaultQuota: number): number {
+  if (typeof quota !== 'number') return 0;
   return Math.floor(100 - (quota / defaultQuota) * 100);
 }
 
@@ -18,8 +19,8 @@ function getProgressStyle(usageRate: number): string {
   return usageRate < 80 ? 'info' : usageRate < 90 ? 'warning' : 'error';
 }
 
-function formatResetTime(time: number) {
-  if (!time) return 'N/A';
+function formatResetTime(time: number | null): string {
+  if (typeof time !== 'number') return 'N/A';
   return new Date(time).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -28,13 +29,11 @@ function formatResetTime(time: number) {
 }
 
 const QuotaInfo: Component<QuotaInfoProps> = (props) => {
-  const {
-    chatQuota = DEFAULT_CHAT_QUOTA,
-    completionsQuota = DEFAULT_COMPLETIONS_QUOTA,
-    resetTime,
-  } = props.item.meta || {};
+  const { chatQuota = null, completionsQuota = null, resetTime = null } = props.item.meta || {};
+
   const chatUsageRate = calcUsageRate(chatQuota, DEFAULT_CHAT_QUOTA);
   const completionsUsageRate = calcUsageRate(completionsQuota, DEFAULT_COMPLETIONS_QUOTA);
+
   return (
     <div class="w-60 text-zinc-400">
       <div class="font-bold flex mb-1 items-center">
@@ -49,9 +48,13 @@ const QuotaInfo: Component<QuotaInfoProps> = (props) => {
         <span class="flex-1">Chat messages</span>
         <span
           class="d-tooltip d-tooltip-right"
-          data-tip={`${DEFAULT_CHAT_QUOTA - chatQuota} / ${DEFAULT_CHAT_QUOTA}`}
+          data-tip={
+            typeof chatQuota === 'number'
+              ? `${DEFAULT_CHAT_QUOTA - chatQuota} / ${DEFAULT_CHAT_QUOTA}`
+              : 'N/A'
+          }
         >
-          {chatUsageRate}%
+          {chatQuota === null ? 'N/A' : `${chatUsageRate}%`}
         </span>
       </div>
       <progress
@@ -63,9 +66,13 @@ const QuotaInfo: Component<QuotaInfoProps> = (props) => {
         <span class="flex-1">Code completions</span>
         <span
           class="d-tooltip d-tooltip-right"
-          data-tip={`${DEFAULT_COMPLETIONS_QUOTA - completionsQuota} / ${DEFAULT_COMPLETIONS_QUOTA}`}
+          data-tip={
+            typeof completionsQuota === 'number'
+              ? `${DEFAULT_COMPLETIONS_QUOTA - completionsQuota} / ${DEFAULT_COMPLETIONS_QUOTA}`
+              : 'N/A'
+          }
         >
-          {completionsUsageRate}%
+          {completionsQuota === null ? 'N/A' : `${completionsUsageRate}%`}
         </span>
       </div>
       <progress
