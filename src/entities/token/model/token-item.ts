@@ -2,9 +2,12 @@ import { refreshMeta } from '@/entities/token/api/copilot-token-meta';
 import * as tokenStorage from '@/entities/token/api/token-storage';
 import { maskToken } from '@/shared/lib/mask-token';
 import { action, query, revalidate } from '@solidjs/router';
-import type { TokenItem } from './types';
+import type { TokenItem, TokenStorageItem } from './types';
 
-function transformTokenItem(tokenItem, defaultToken?): TokenItem {
+function transformTokenItem(
+  tokenItem: TokenStorageItem,
+  defaultToken?: TokenStorageItem,
+): TokenItem {
   return {
     ...tokenItem,
     token: maskToken(tokenItem.token),

@@ -6,15 +6,18 @@ export interface TokenAuth {
   verificationUri?: string;
 }
 
-export interface TokenItem {
+export interface TokenItem extends TokenStorageItem {
+  default: boolean;
+}
+
+export interface TokenStorageItem {
   id: string;
   name: string;
   token: string;
   createdAt: number;
-  default: boolean;
-  meta: {
-    chatQuota: number;
-    completionsQuota: number;
-    resetTime: number;
+  meta?: {
+    chatQuota: number | null;
+    completionsQuota: number | null;
+    resetTime: number | null;
   };
 }
