@@ -90,4 +90,22 @@ describe('copilot-token-meta', () => {
       'Failed to fetch token: 401 Unauthorized',
     );
   });
+
+  it('handles null limited_user_quotas and limited_user_reset_date', async () => {
+    (globalThis.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        token: 'bearer-token-xyz',
+        expires_at: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+        limited_user_quotas: null,
+        limited_user_reset_date: null,
+      }),
+    });
+
+    const meta = await refreshMeta('oauth-null');
+    expect(meta.token).toBe('bearer-token-xyz');
+    expect(meta.chatQuota).toBeNull();
+    expect(meta.completionsQuota).toBeNull();
+    expect(meta.resetTime).toBeNull();
+  });
 });
