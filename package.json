@@ -20,7 +20,9 @@
     "lint": "biome lint src",
     "check": "biome check --apply src",
     "test:e2e": "playwright test",
-    "test:e2e:headed": "playwright test --headed"
+    "test:e2e:headed": "playwright test --headed",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@solidjs/meta": "0.29.4",
@@ -47,12 +49,18 @@
     "@playwright/test": "1.52.0",
     "@tailwindcss/vite": "^4.0.7",
     "@types/node": "^22.15.3",
+    "@types/node-persist": "3.1.8",
+    "@vitest/coverage-v8": "3.2.4",
+    "@vitest/ui": "3.2.4",
     "eslint": "^9.25.0",
+    "jsdom": "26.1.0",
     "nodemon": "^3.1.10",
     "tailwindcss": "^4.1.4",
     "typescript": "^5.7.2",
     "vite": "^6.0.0",
-    "vite-plugin-solid": "^2.11.6"
+    "vite-plugin-solid": "^2.11.6",
+    "vite-tsconfig-paths": "5.1.4",
+    "vitest": "3.2.4"
   },
   "engines": {
     "node": ">=22.0.0"

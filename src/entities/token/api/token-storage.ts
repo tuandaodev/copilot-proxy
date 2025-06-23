@@ -1,5 +1,6 @@
 import storage from 'node-persist';
 import { v4 as uuid } from 'uuid';
+import type { TokenStorageItem } from '../model/types';
 
 const STORAGE_DIR = process.env.STORAGE_DIR || '.storage';
 
@@ -17,7 +18,11 @@ await tokenStorage.init();
 await selectedTokenStorage.init();
 
 // Store a new token: { name, token }
-export async function storeToken({ id, name, token }) {
+export async function storeToken({
+  id,
+  name,
+  token,
+}: { id?: string; name: string; token: string }): Promise<TokenStorageItem> {
   const item = id
     ? await tokenStorage.getItem(id)
     : { id: uuid(), name, token, createdAt: Date.now() };
@@ -25,11 +30,11 @@ export async function storeToken({ id, name, token }) {
   return await tokenStorage.getItem(item.id);
 }
 
-export async function getToken(id) {
+export async function getToken(id: TokenStorageItem['id']): Promise<TokenStorageItem | undefined> {
   return await tokenStorage.getItem(id);
 }
 
-export async function updateName(id, name) {
+export async function updateName(id: TokenStorageItem['id'], name: TokenStorageItem['name']) {
   const item = await tokenStorage.getItem(id);
   if (!item) {
     throw new Error('Token not found');
@@ -37,7 +42,7 @@ export async function updateName(id, name) {
   await tokenStorage.setItem(item.id, { ...item, name });
 }
 
-export async function updateMetaByToken(oauthToken, meta) {
+export async function updateMetaByToken(oauthToken: string, meta: TokenStorageItem['meta']) {
   const tokens = await tokenStorage.values();
   const tokenItem = tokens.find((item) => item.token === oauthToken);
   if (!tokenItem) {
@@ -48,20 +53,20 @@ export async function updateMetaByToken(oauthToken, meta) {
 }
 
 // Get all tokens
-export async function getTokens() {
+export async function getTokens(): Promise<TokenStorageItem[]> {
   return (await tokenStorage.values()) || [];
 }
 
 // Remove a token by id
-export async function removeToken(id) {
+export async function removeToken(id: TokenStorageItem['id']) {
   await tokenStorage.removeItem(id);
 }
 
-export async function selectToken(id) {
+export async function selectToken(id: TokenStorageItem['id']) {
   await selectedTokenStorage.setItem('selected-token-id', id);
 }
 
-export async function getSelectedToken() {
+export async function getSelectedToken(): Promise<TokenStorageItem | null> {
   const id = await selectedTokenStorage.getItem('selected-token-id');
   if (!id) {
     return null;
