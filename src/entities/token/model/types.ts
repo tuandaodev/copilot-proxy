@@ -15,9 +15,13 @@ export interface TokenStorageItem {
   name: string;
   token: string;
   createdAt: number;
-  meta?: {
-    chatQuota: number | null;
-    completionsQuota: number | null;
-    resetTime: number | null;
-  };
+  meta?: CopilotMeta;
+}
+
+export interface CopilotMeta {
+  token: string;
+  expiresAt: number;
+  resetTime: number | null;
+  chatQuota: number | null;
+  completionsQuota: number | null;
 }

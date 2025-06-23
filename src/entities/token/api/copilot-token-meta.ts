@@ -1,17 +1,28 @@
 import { updateMetaByToken } from '@/entities/token/api/token-storage';
 import { COPILOT_TOKEN_API_URL } from '@/shared/config/config';
+import type { CopilotMeta } from '../model/types';
+
+interface CopilotApiResponse {
+  token: string;
+  expires_at: string;
+  limited_user_quotas: {
+    chat: number;
+    completions: number;
+  } | null;
+  limited_user_reset_date: number | null;
+}
 
 // Token cache storing {token, expiresAt} keyed by oauthToken
-const cacheMap = new Map();
+const cacheMap = new Map<string, CopilotMeta>();
 
 // Function to check if a cached token is still valid (with 5 min buffer)
-const isTokenValid = (meta) => {
+const isTokenValid = (meta?: CopilotMeta): boolean => {
   if (!meta) return false;
   const bufferDuration = 5 * 60 * 1000; // 5 minutes
   return Date.now() < meta.expiresAt - bufferDuration;
 };
 
-async function fetchMeta(oauthToken) {
+async function fetchMeta(oauthToken: string): Promise<CopilotMeta> {
   const res = await fetch(COPILOT_TOKEN_API_URL, {
     method: 'GET',
     headers: {
@@ -29,13 +40,14 @@ async function fetchMeta(oauthToken) {
     expires_at,
     limited_user_quotas: { chat: chatQuota, completions: completionsQuota },
     limited_user_reset_date: resetDate,
-  } = await res.json();
+  }: CopilotApiResponse = await res.json();
+
   const expiresAt = expires_at ? new Date(expires_at).getTime() : Date.now() + 60 * 60 * 1000;
 
   return { token, expiresAt, resetTime: resetDate * 1000, chatQuota, completionsQuota };
 }
 
-export async function refreshMeta(oauthToken) {
+export async function refreshMeta(oauthToken: string): Promise<CopilotMeta> {
   const meta = await fetchMeta(oauthToken);
 
   cacheMap.set(oauthToken, meta);
@@ -43,7 +55,7 @@ export async function refreshMeta(oauthToken) {
   return meta;
 }
 
-export async function getBearerToken(oauthToken) {
+export async function getBearerToken(oauthToken: string): Promise<string> {
   let meta = cacheMap.get(oauthToken);
   if (!isTokenValid(meta)) {
     meta = await refreshMeta(oauthToken);
