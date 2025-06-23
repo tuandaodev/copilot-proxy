@@ -35,16 +35,18 @@ async function fetchMeta(oauthToken: string): Promise<CopilotMeta> {
     throw new Error(`Failed to fetch token: ${res.status} ${res.statusText}`);
   }
 
-  const {
-    token,
-    expires_at,
-    limited_user_quotas: { chat: chatQuota, completions: completionsQuota },
-    limited_user_reset_date: resetDate,
-  }: CopilotApiResponse = await res.json();
+  const { token, expires_at, limited_user_quotas, limited_user_reset_date }: CopilotApiResponse =
+    await res.json();
 
+  const chatQuota = limited_user_quotas?.chat ?? null;
+  const completionsQuota = limited_user_quotas?.completions ?? null;
+  const resetTime =
+    limited_user_reset_date !== null && limited_user_reset_date !== undefined
+      ? limited_user_reset_date * 1000
+      : null;
   const expiresAt = expires_at ? new Date(expires_at).getTime() : Date.now() + 60 * 60 * 1000;
 
-  return { token, expiresAt, resetTime: resetDate * 1000, chatQuota, completionsQuota };
+  return { token, expiresAt, resetTime, chatQuota, completionsQuota };
 }
 
 export async function refreshMeta(oauthToken: string): Promise<CopilotMeta> {
@@ -60,5 +62,5 @@ export async function getBearerToken(oauthToken: string): Promise<string> {
   if (!isTokenValid(meta)) {
     meta = await refreshMeta(oauthToken);
   }
-  return meta.token;
+  return meta?.token || '';
 }
