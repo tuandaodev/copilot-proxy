@@ -1,12 +1,14 @@
 name: CI & Publish to npm
 
 on:
-  push:
-    tags:
-      - '*'
+  workflow_run:
+    workflows: ["Validate Tag"]
+    types:
+      - completed
 
 jobs:
   build-and-publish:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:

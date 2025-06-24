@@ -1,14 +1,16 @@
 name: Publish Docker image to GHCR
 on:
-  push:
-    tags:
-      - '*'
+  workflow_run:
+    workflows: ["Validate Tag"]
+    types:
+      - completed
 jobs:
   build-and-push:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     env:
       REPO_PATH: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}
-      VERSION: ${{ github.ref_name }}
+      VERSION: ${{ github.event.workflow_run.head_branch }}
     steps:
       - uses: actions/checkout@v4
       - name: Log in to GHCR
@@ -23,5 +25,4 @@ jobs:
           docker tag ${{ env.REPO_PATH }}:${{ env.VERSION }} ${{ env.REPO_PATH }}:latest
           docker push ${{ env.REPO_PATH }}:${{ env.VERSION }}
           docker push ${{ env.REPO_PATH }}:latest
-
 
