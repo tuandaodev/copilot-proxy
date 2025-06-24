@@ -1,5 +1,8 @@
 // @refresh reload
 import { StartServer, createHandler } from '@solidjs/start/server';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export default createHandler(() => (
   <StartServer

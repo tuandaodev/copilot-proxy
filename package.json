@@ -11,7 +11,7 @@
   "bin": {
     "copilot-proxy": "bin/cli.js"
   },
-  "files": ["dist", "READEME.md", "package.json", "bin"],
+  "files": ["dist", "README.md", "package.json", "bin"],
   "scripts": {
     "dev": "node --env-file=.env ./node_modules/vinxi/bin/cli.mjs dev",
     "build": "vinxi build",
@@ -28,17 +28,15 @@
     "@solidjs/meta": "0.29.4",
     "@solidjs/router": "0.15.3",
     "@solidjs/start": "1.1.4",
-    "@tinyhttp/app": "^2.2.1",
-    "@tinyhttp/logger": "^2.1.0",
     "daisyui": "^5.0.30",
     "dotenv": "^16.5.0",
+    "langfuse": "3.37.4",
     "lucide-solid": "^0.503.0",
-    "milliparsec": "^2.3.0",
     "node-persist": "^4.0.4",
+    "openai": "5.5.1",
     "pino": "^9.6.0",
     "pino-http": "^10.4.0",
     "pino-pretty": "^13.0.0",
-    "sirv": "^3.0.1",
     "solid-js": "^1.9.5",
     "uuid": "^11.1.0",
     "vinxi": "0.5.6",

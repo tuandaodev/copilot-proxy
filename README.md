@@ -21,12 +21,17 @@ A simple HTTP proxy that exposes your GitHub Copilot free quota as an OpenAI-com
   - Add tokens manually
   - Manage multiple tokens with ease
   - View chat message and code completion usage statistics
+- Supports Langfuse for LLM observability
 
 ## How to use
-- Start the proxy server by `npx` or `pnpx`
+- Start the proxy server
+  - Option 1: Use Docker
     ```bash
-    npx copilot-proxy
-
+    docker run -p 3000:3000 ghcr.io/hankchiutw/copilot-proxy:latest
+    ```
+  - Option 2: Use `pnpx`(recommended) or `npx`
+    ```bash
+    pnpx copilot-proxy
     ```
 - Browse `http://localhost:3000` to generate the token by following the instructions.
   - Or add your own token manually.
@@ -40,18 +45,28 @@ A simple HTTP proxy that exposes your GitHub Copilot free quota as an OpenAI-com
       "messages": [{"role": "user", "content": "Hi"}]
   }'
   ```
-    - Note: For `gpt-4.1` model, you need to set `"stream": true` in the request body. See https://github.com/hankchiutw/copilot-proxy/issues/2#issuecomment-2896408253
   - You still can set a token in the request header `authorization: Bearer <token>` and it will override the default token.
 - (Optional) Use environment variable `PORT` for setting different port other than `3000`.
 
-## Advanced usage
-- For some LLM clients, it is mandatory to provide a non-empty API key. In that case you can use a special dummy token `_` to make copilot-proxy use the default token.
-- The token is stored locally under a storage directory (default: `.storage`). You can change this location by setting the `STORAGE_DIR` environment variable before starting the server. For example:
-    ```bash
-    STORAGE_DIR=/path/to/your/storage npx copilot-proxy
-    ```
-    Be sure to backup this directory if you want to keep your tokens.
+## Available environment variables
+  - `PORT`: Port number to listen on (default: `3000`)
+  - `LOG_LEVEL`: Log level (default: `info`)
+  - `STORAGE_DIR`: Directory to store tokens (default: `.storage`)
+    - Be sure to backup this directory if you want to keep your tokens.
     - Note: even if you delete the storage folder, the token is still functional from GitHub Copilot. (That is how Github Copilot works at the moment.)
+  - Langfuse is supported, see official [documentation](https://langfuse.com/docs/get-started) for more details.
+      - `LANGFUSE_SECRET_KEY`: Langfuse secret key
+      - `LANGFUSE_PUBLIC_KEY`: Langfuse public key
+      - `LANGFUSE_BASEURL`: Langfuse base URL (default: `https://cloud.langfuse.com`)
+
+## Advanced usage
+- Dummy token `_` to make copilot-proxy use the default token.
+    - In most cases, the default token just works without 'Authorization' header. But if your LLM client requires a non-empty API key, you can use the special dummy token `_` to make copilot-proxy use the default token.
+- Tips for using docker:
+  - Mount the storage folder from host to persist the tokens and use .env file to set environment variables
+    ```bash
+    docker run -p 3000:3000 -v /path/to/storage:/app/.storage -v /path/to/.env:/app/.env ghcr.io/hankchiutw/copilot-proxy:latest
+    ```
 
 ## Use cases
 - Use with [LLM](https://llm.datasette.io/en/stable/other-models.html#openai-compatible-models) CLI locally.

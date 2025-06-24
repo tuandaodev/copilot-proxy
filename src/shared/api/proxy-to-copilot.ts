@@ -1,38 +1,12 @@
-import { COPILOT_API_HOST, COPILOT_HEADERS } from '@/shared/config/config';
-import { log } from '@/shared/lib/logger';
+import { chatCompletionHandler, commonHandler, getHandlerConfig } from '@/shared/lib/proxy-handler';
+import type { APIEvent } from '@solidjs/start/server';
 
-// Refactored: utility for API routes, not Express middleware
-export async function proxyToCopilot(event, bearerToken) {
-  const url = new URL(event.request.url);
-  const targetPath = url.pathname.replace(/^\/api/, '');
-  const targetUrl = `https://${COPILOT_API_HOST}${targetPath}${url.search}`;
+export async function proxyToCopilot(event: APIEvent, bearerToken: string) {
+  const config = await getHandlerConfig(event, bearerToken);
 
-  // Prepare headers
-  const headers = new Headers(event.request.headers);
-  COPILOT_HEADERS && Object.entries(COPILOT_HEADERS).forEach(([k, v]) => headers.set(k, v));
-  headers.set('authorization', `Bearer ${bearerToken}`);
-  headers.set('host', COPILOT_API_HOST);
+  if (config.targetPath.startsWith('/chat/completions')) {
+    return chatCompletionHandler(config);
+  }
 
-  const body =
-    event.request.method === 'GET' || event.request.method === 'HEAD'
-      ? undefined
-      : event.request.body;
-
-  log.info(`Proxying to: ${event.request.method} ${targetUrl}`);
-
-  // Proxy the request
-  const proxyResponse = await fetch(targetUrl, {
-    method: event.request.method,
-    headers,
-    body,
-    duplex: 'half',
-  });
-
-  log.info(`Proxy response: ${proxyResponse.status} ${proxyResponse.statusText}`);
-
-  // Return proxied response
-  return new Response(proxyResponse.body, {
-    status: proxyResponse.status,
-    headers: proxyResponse.headers,
-  });
+  return commonHandler(config);
 }
