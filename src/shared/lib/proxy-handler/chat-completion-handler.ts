@@ -9,10 +9,11 @@ import { maskToken } from '@/shared/lib/mask-token';
 const langfuse = new Langfuse();
 
 async function responseStream(completions: AsyncIterable<OpenAI.ChatCompletion>) {
+  const encoder = new TextEncoder();
   const stream = new ReadableStream({
     async start(controller) {
       for await (const chunk of completions) {
-        controller.enqueue(`data: ${JSON.stringify(chunk)}\n\n`);
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify(chunk)}\n\n`));
       }
       controller.close();
     },
@@ -61,5 +62,5 @@ export async function chatCompletionHandler(config: HandlerConfig) {
     trace.update({ output: completions });
     return responseJson(completions);
   }
-  return responseStream(completions);
+  return responseStream(completions as AsyncIterable<OpenAI.ChatCompletion>);
 }
