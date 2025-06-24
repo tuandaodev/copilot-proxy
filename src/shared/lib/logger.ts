@@ -1,5 +1,6 @@
 import pino from 'pino';
 import pinoHttp from 'pino-http';
+import 'pino-pretty';
 
 export const log = pino({
   level: process.env.LOG_LEVEL || 'info',
