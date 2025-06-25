@@ -18,12 +18,10 @@ COPY . .
 # Build the app to create the dist folder
 RUN pnpm run build
 
-# Prepare a directory with only the files listed in package.json "files"
-RUN mkdir /app/prod && \
-    cp package.json /app/prod/ && \
-    cp -r node_modules /app/prod/ && \
-    node -e "const {files} = require('./package.json'); \
-      files.forEach(f => require('fs').cpSync(f, '/app/prod/' + f, {recursive: true}));"
+# Prepare the releasing package same as doing `npm publish`
+RUN npm pack && \
+  tar -zxvf *.tgz && \
+  mv /app/package /app/prod
 
 # Production stage
 FROM gcr.io/distroless/nodejs22-debian12
