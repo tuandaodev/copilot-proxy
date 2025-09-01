@@ -14,6 +14,7 @@
   "files": ["dist", "README.md", "package.json", "bin"],
   "scripts": {
     "dev": "node --env-file=.env ./node_modules/vinxi/bin/cli.mjs dev",
+    "local": "node ./node_modules/vinxi/bin/cli.mjs dev",
     "build": "vinxi build",
     "start": "vinxi start",
     "format": "biome format --write src",
