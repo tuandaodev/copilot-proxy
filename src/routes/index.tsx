@@ -7,6 +7,10 @@ export default function Home() {
         <a 
           href="/admin" 
           class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg text-white font-medium transition-colors duration-200"
+          onClick={(e) => {
+            e.preventDefault();
+            window.location.href = '/admin';
+          }}
         >
           Go to Admin Dashboard
         </a>

@@ -54,6 +54,11 @@ A simple HTTP proxy that exposes your GitHub Copilot free quota as an OpenAI-com
   - `STORAGE_DIR`: Directory to store tokens (default: `.storage`)
     - Be sure to backup this directory if you want to keep your tokens.
     - Note: even if you delete the storage folder, the token is still functional from GitHub Copilot. (That is how Github Copilot works at the moment.)
+  - **Basic Authentication** (protects `/admin` and `/api` routes):
+    - `BASIC_AUTH_ENABLED`: Enable/disable basic auth (default: `true`)
+    - `BASIC_AUTH_USERNAME`: Username for basic auth (default: `admin`)
+    - `BASIC_AUTH_PASSWORD`: Password for basic auth (default: `password`)
+    - **⚠️ Security Warning**: Change the default credentials in production!
   - Langfuse is supported, see official [documentation](https://langfuse.com/docs/get-started) for more details.
       - `LANGFUSE_SECRET_KEY`: Langfuse secret key
       - `LANGFUSE_PUBLIC_KEY`: Langfuse public key
