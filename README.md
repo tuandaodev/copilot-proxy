@@ -80,6 +80,20 @@ A simple HTTP proxy that exposes your GitHub Copilot free quota as an OpenAI-com
 
 - Node.js 22 or higher 
 
+## How to use docker-compose
+
+- Build + run:
+
+    ```
+    docker compose up -d --build`
+    ```
+
+- When you want the newest commits from your repo:
+    ```
+    docker compose build --no-cache copilot-proxy
+    docker compose up -d
+    ```
+
 ## References
 - https://www.npmjs.com/package/@github/copilot-language-server
 - https://github.com/B00TK1D/copilot-api

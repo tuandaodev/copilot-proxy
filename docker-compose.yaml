@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  copilot-proxy:
+    container_name: copilot-proxy
+    restart: unless-stopped
+
+    # Build straight from your fork
+    build:
+      # Use a public HTTPS Git URL. You can pin to a branch, tag, or commit:
+      #   ...git#<ref>[/<subdir>]
+      # Examples:
+      #   main branch root:  https://github.com/tuandaodev/copilot-proxy.git#main
+      #   tag v0.1.0:        https://github.com/tuandaodev/copilot-proxy.git#v0.1.0
+      #   commit + subdir:   https://github.com/tuandaodev/copilot-proxy.git#<commit-sha>:app
+      context: https://github.com/tuandaodev/copilot-proxy.git#main
+      dockerfile: Dockerfile  # change if your Dockerfile lives elsewhere
+      # args:                 # (optional) build args if your Dockerfile uses them
+      #   SOME_ARG: "value"
+
+    # (Optional) give the built image a stable local name
+    image: tuandaodev/copilot-proxy:git-main
+
+    # Expose the web UI at http://localhost:3000
+    ports:
+      - "${PORT:-3000}:3000"
+
+    # Persist tokens across restarts
+    volumes:
+      - ./copilot-data:/data
+
+    environment:
+      PORT: "3000"
+      LOG_LEVEL: "${LOG_LEVEL:-info}"
+      STORAGE_DIR: "/data"

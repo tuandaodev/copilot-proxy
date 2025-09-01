@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Copilot Proxy</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="copilot-proxy">Copilot Proxy</h1>
+<p>A simple HTTP proxy that exposes your GitHub Copilot free quota as an OpenAI-compatible API.</p>
+<img src="https://raw.githubusercontent.com/hankchiutw/copilot-proxy/main/screenshot.png" width="600">
+<h2 id="why">Why?</h2>
+<ul>
+<li>You have a lot of free quota on GitHub Copilot, you want to use it like OpenAI-compatible APIs.</li>
+<li>You want the computing power of GitHub Copilot beyond VS Code.</li>
+<li>You want to use modern models like gpt-4.1 free.</li>
+<li>You have multiple GitHub accounts and the free quota is just wasted.</li>
+<li>Host LLM locally and leave the computing remotely.</li>
+</ul>
+<h2 id="features">Features</h2>
+<ul>
+<li>Proxies requests to <code>https://api.githubcopilot.com</code>
+<ul>
+<li>Support endpoints: <code>/chat/completions</code>, <code>/models</code></li>
+</ul>
+</li>
+<li>User-friendly admin UI:
+<ul>
+<li>Log in with GitHub and generate tokens</li>
+<li>Add tokens manually</li>
+<li>Manage multiple tokens with ease</li>
+<li>View chat message and code completion usage statistics</li>
+</ul>
+</li>
+<li>Supports Langfuse for LLM observability</li>
+</ul>
+<h2 id="how-to-use">How to use</h2>
+<ul>
+<li>Start the proxy server
+<ul>
+<li>Option 1: Use Docker<pre><code class="language-bash">docker run -p 3000:3000 ghcr.io/hankchiutw/copilot-proxy:latest
+</code></pre>
+</li>
+<li>Option 2: Use <code>pnpx</code>(recommended) or <code>npx</code><pre><code class="language-bash">pnpx copilot-proxy
+</code></pre>
+</li>
+</ul>
+</li>
+<li>Browse <code>http://localhost:3000</code> to generate the token by following the instructions.
+<ul>
+<li>Or add your own token manually.</li>
+</ul>
+</li>
+<li>Set a default token.</li>
+<li>Your OpenAI-compatible API base URL is <code>http://localhost:3000/api</code>
+<ul>
+<li>You can test it like this: (no need authorization header since you've set a default token!)</li>
+</ul>
+<pre><code>curl --request POST --url http://localhost:3000/api/chat/completions --header 'content-type: application/json' \
+--data '{
+    &quot;model&quot;: &quot;gpt-4&quot;,
+    &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Hi&quot;}]
+}'
+</code></pre>
+<ul>
+<li>You still can set a token in the request header <code>authorization: Bearer &lt;token&gt;</code> and it will override the default token.</li>
+</ul>
+</li>
+<li>(Optional) Use environment variable <code>PORT</code> for setting different port other than <code>3000</code>.</li>
+</ul>
+<h2 id="available-environment-variables">Available environment variables</h2>
+<ul>
+<li><code>PORT</code>: Port number to listen on (default: <code>3000</code>)</li>
+<li><code>LOG_LEVEL</code>: Log level (default: <code>info</code>)</li>
+<li><code>STORAGE_DIR</code>: Directory to store tokens (default: <code>.storage</code>)
+<ul>
+<li>Be sure to backup this directory if you want to keep your tokens.</li>
+<li>Note: even if you delete the storage folder, the token is still functional from GitHub Copilot. (That is how Github Copilot works at the moment.)</li>
+</ul>
+</li>
+<li><strong>Basic Authentication</strong> (protects <code>/admin</code> and <code>/api</code> routes):
+<ul>
+<li><code>BASIC_AUTH_ENABLED</code>: Enable/disable basic auth (default: <code>true</code>)</li>
+<li><code>BASIC_AUTH_USERNAME</code>: Username for basic auth (default: <code>admin</code>)</li>
+<li><code>BASIC_AUTH_PASSWORD</code>: Password for basic auth (default: <code>password</code>)</li>
+<li><strong>⚠️ Security Warning</strong>: Change the default credentials in production!</li>
+</ul>
+</li>
+<li>Langfuse is supported, see official <a href="https://langfuse.com/docs/get-started">documentation</a> for more details.
+<ul>
+<li><code>LANGFUSE_SECRET_KEY</code>: Langfuse secret key</li>
+<li><code>LANGFUSE_PUBLIC_KEY</code>: Langfuse public key</li>
+<li><code>LANGFUSE_BASEURL</code>: Langfuse base URL (default: <code>https://cloud.langfuse.com</code>)</li>
+</ul>
+</li>
+</ul>
+<h2 id="advanced-usage">Advanced usage</h2>
+<ul>
+<li>Dummy token <code>_</code> to make copilot-proxy use the default token.
+<ul>
+<li>In most cases, the default token just works without 'Authorization' header. But if your LLM client requires a non-empty API key, you can use the special dummy token <code>_</code> to make copilot-proxy use the default token.</li>
+</ul>
+</li>
+<li>Tips for using docker:
+<ul>
+<li>Mount the storage folder from host to persist the tokens and use .env file to set environment variables<pre><code class="language-bash">docker run -p 3000:3000 -v /path/to/storage:/app/.storage -v /path/to/.env:/app/.env ghcr.io/hankchiutw/copilot-proxy:latest
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="use-cases">Use cases</h2>
+<ul>
+<li>Use with <a href="https://llm.datasette.io/en/stable/other-models.html#openai-compatible-models">LLM</a> CLI locally.</li>
+<li>Chat with GitHub Copilot by <a href="https://docs.openwebui.com/getting-started/">Open WebUI</a>.</li>
+</ul>
+<h2 id="requirements">Requirements</h2>
+<ul>
+<li>Node.js 22 or higher</li>
+</ul>
+<h2 id="how-to-use-docker-compose">How to use docker-compose</h2>
+<p>Make sure BuildKit is on (Docker Desktop already is).</p>
+<p>Build + run:</p>
+<p><code>docker compose up -d --build</code></p>
+<p>Pulling latest code later</p>
+<p>When you want the newest commits from your repo:</p>
+<pre><code>docker compose build --no-cache copilot-proxy
+docker compose up -d
+</code></pre>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://www.npmjs.com/package/@github/copilot-language-server">https://www.npmjs.com/package/@github/copilot-language-server</a></li>
+<li><a href="https://github.com/B00TK1D/copilot-api">https://github.com/B00TK1D/copilot-api</a></li>
+<li><a href="https://github.com/ericc-ch/copilot-api">https://github.com/ericc-ch/copilot-api</a></li>
+<li><a href="https://hub.docker.com/r/mouxan/copilot">https://hub.docker.com/r/mouxan/copilot</a></li>
+</ul>
+<blockquote>
+<p>Licensed under the <a href="./LICENSE">MIT License</a>.</p>
+</blockquote>
+
+            
+            
+        </body>
+        </html>
